@@ -5,9 +5,14 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-    <div id="vis">
-        <svg id="main"></svg>
+    <div id="vis" class="row">
+        <div class="column">
+            <svg id="chord-diagram" width="800" height="800"></svg>
+        </div>
+        <div class="column">
+            <div><svg id="pyramid-chart" width="400" height="400"></svg></div>
+            <div><svg id="matrix-chart" width="400" height="400"></svg></div>
+        </div>
     </div>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>

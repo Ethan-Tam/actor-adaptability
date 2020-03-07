@@ -1,0 +1,1 @@
+This folder is for code from our past programming assignments that may be relevant.
