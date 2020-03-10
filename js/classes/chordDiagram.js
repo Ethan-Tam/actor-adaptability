@@ -31,39 +31,35 @@ class ChordDiagram {
     vis.nodeCircles = vis.chart.selectAll('.node');
 
     // Set circle radius
-    vis.rad = 2;
+    vis.radius = 6;
+
+    vis.line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y)
+        .curve(d3.curveBundle.beta(0.7));
 
     // Create the colour scale
     vis.scale = d3.scaleOrdinal(d3.schemeTableau10)
         .domain(vis.genres);
 
-    // Start the force simulation
-    vis.sim = d3.forceSimulation()
-        // Make the repel each other
-        .force('charge', d3.forceManyBody().strength(-1))
-        .force("radial", d3.forceRadial(300, vis.centreX, vis.centreY).strength(0.5))
-        // On tick update nodes and edges
-        .on('tick', () => {
-          vis.nodeCircles
-              .attr('cx', d => d.x)
-              .attr('cy', d => d.y);
+    let genreStartPositionMap = {};
+    let numShiftsPerGap = 100;
+    let nextAngle = 0;
+    let angleShift = 2 * Math.PI / (vis.nodes.length + numShiftsPerGap * vis.genres.length);
+    vis.outerRadius = 300;
 
-          vis.linkLines
-              .attr('d', (d, i) => {
-                return 'M' + d.source.x + ' ' + d.source.y
-                  + ' Q' + vis.centreX + ' ' + vis.centreY + ' '
-                  + d.target.x + ' ' + d.target.y;
-              });
-        });
-
-    // Process the nodes for x and y position
-    vis.nodes.forEach((d, i) => {
-      d.x = vis.centreX;
-      d.y = vis.centreY;
+    vis.idToNode = {};
+    let lastGenre = ""
+    vis.nodes.forEach((n, i) => {
+      nextAngle += angleShift;
+      if (lastGenre !== n.genre) {
+        nextAngle += angleShift * numShiftsPerGap;
+      }
+      lastGenre = n.genre;
+      n.x = vis.centreX + Math.cos(nextAngle) * vis.outerRadius;
+      n.y = vis.centreY + Math.sin(nextAngle) * vis.outerRadius;
+      vis.idToNode[n.uid] = n;
     });
-
-    // Set up updated nodes and links
-    vis.sim.nodes(vis.nodes)
   }
 
   render() {
@@ -85,7 +81,7 @@ class ChordDiagram {
         .attr('class', 'node')
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
-        .attr('r', vis.rad)
+        .attr('r', vis.radius)
         .attr('fill', d => vis.scale(d.genre));
   }
 }

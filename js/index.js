@@ -13,11 +13,11 @@ const initializeChordDiagram = data => {
   let genres = []
   data.sort((a, b) => {
     return b.actors.length - a.actors.length;
-  }).slice(0, 5).forEach(d => {
+  }).slice(0, 10).forEach(d => {
     let genre = d.genre;
     genres.push(genre);
     d.actors.split(',').forEach(a => {
-      nodes.push({genre: genre, name: a});
+      nodes.push({genre: genre, name: a, uid: genre + "_" + a});
     });
   });
 
