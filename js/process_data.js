@@ -72,9 +72,9 @@ const processData = () => {
     });
 
     // Convert the arrays to CSV strings
-    let gToACsvContent = 'genre, actors\n' + gToARows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
-    let aToMCsvContent = 'actor, movies\n' + aToMRows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
-    let aToACsvContent = 'actor, actors\n' + aToARows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
+    let gToACsvContent = 'genre,actors\n' + gToARows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
+    let aToMCsvContent = 'actor,movies\n' + aToMRows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
+    let aToACsvContent = 'actor,actors\n' + aToARows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
 
     // Log the strings so they can be pasted into CSV files
     console.log(gToACsvContent);

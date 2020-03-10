@@ -6,6 +6,37 @@ let actorToActor;
 let actorToMovie;
 let genreToActor;
 
+let chordDiagram;
+
+const initializeChordDiagram = data => {
+  let nodes = [];
+  let genres = []
+  data.sort((a, b) => {
+    return b.actors.length - a.actors.length;
+  }).slice(0, 5).forEach(d => {
+    let genre = d.genre;
+    genres.push(genre);
+    d.actors.split(',').forEach(a => {
+      nodes.push({genre: genre, name: a});
+    });
+  });
+
+  let links = [];
+
+  chordDiagram = new ChordDiagram({
+    parentElement: '#chord-diagram',
+    containerWidth: 800,
+    containerHeight: 800
+  });
+
+  chordDiagram.nodes = nodes;
+  chordDiagram.genres = genres;
+  chordDiagram.links = links;
+
+  chordDiagram.initVis();
+  chordDiagram.render();
+};
+
 Promise.all([
   d3.csv('data/movie-data.csv'),
   d3.csv('data/actor-to-actor.csv'),
@@ -24,4 +55,6 @@ Promise.all([
   genreToActor = d3.nest()
       .key(d => d["genre"])
       .map(files[3]);
+
+  initializeChordDiagram(files[3]);
 });
