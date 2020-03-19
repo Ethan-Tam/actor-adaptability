@@ -1,7 +1,7 @@
 // Load/parse/process datasets, set up callbacks etc.
 const processData = () => {
   let genreToActors = {};
-  let actorToMovies = {};
+  let actorToGenres = {};
   let actorToActor = {};
 
   d3.csv('data/movie-data.csv').then(data => {
@@ -13,20 +13,27 @@ const processData = () => {
         let name = a.trim();
 
         // Handle the genre to actor dict
-        d['Genre'].split(',').forEach(g => {
-          if (!(g in genreToActors)) {
-            genreToActors[g] = [];
-          }
-          if (!genreToActors[g].includes(name)) {
-            genreToActors[g].push(name);
-          }
-        });
+        g = d['Genre'].split(',')[0]
+        if (!(g in genreToActors)) {
+          genreToActors[g] = [];
+        }
+        if (!genreToActors[g].includes(name)) {
+          genreToActors[g].push(name);
+        }
 
-        // Handle the actor to movie dict
-        if (!(name in actorToMovies)) {
-          actorToMovies[name] = [d['Title']];
+        // Handle the actor to genre dict
+        if (!(name in actorToGenres)) {
+          actorToGenres[name] = [{genre: g, count: 1}];
         } else {
-          actorToMovies[name].push(d['Title']);
+          let isNew = true;
+          actorToGenres[name].forEach(t => {
+            if (t.genre === g) {
+              t.count++;
+              isNew = false;
+            }
+          });
+          if (isNew)
+            actorToGenres[name].push({name: g, count: 1});
         }
 
         // Handle the actor to actor dict
@@ -35,8 +42,16 @@ const processData = () => {
         }
         d['Actors'].split(',').forEach(o => {
           let otherName = o.trim();
-          if (name !== otherName && !actorToActor[name].includes(otherName)) {
-            actorToActor[name].push(otherName);
+          if (name !== otherName) {
+            let isNew = true;
+            actorToActor[name].forEach(t => {
+              if (t.name === otherName) {
+                t.count++;
+                isNew = false;
+              }
+            });
+            if (isNew)
+              actorToActor[name].push({name: otherName, count: 1});
           }
         });
       });
@@ -44,41 +59,39 @@ const processData = () => {
 
     // Convert the dicts to arrays
     let gToARows = [];
-    let aToMRows = [];
+    let aToGRows = [];
     let aToARows = [];
 
     Object.entries(genreToActors).forEach(([k, v]) => {
-      let row = [k, v.join(',')];
+      let row = {genre: k, actors: v};
       gToARows.push(row);
     });
     gToARows.sort((a, b) => {
-      return b[1].length - a[1].length
+      return b.actors.length - a.actors.length
     });
 
-    Object.entries(actorToMovies).forEach(([k, v]) => {
-      let row = [k, v.join(',')];
-      aToMRows.push(row);
+    Object.entries(actorToGenres).forEach(([k, v]) => {
+      let row = {actor: k, genres: v};
+      aToGRows.push(row);
     });
-    aToMRows.sort((a, b) => {
-      return b[1].length - a[1].length
+    aToGRows.sort((a, b) => {
+      return b.genres.length - a.genres.length
     });
 
     Object.entries(actorToActor).forEach(([k, v]) => {
-      let row = [k, v.join(',')];
+      v.sort((a, b) => {
+        return b.count - a.count;
+      });
+      let row = {actor: k, actors: v};
       aToARows.push(row);
     });
     aToARows.sort((a, b) => {
-      return b[1].length - a[1].length
+      return b.actors.length - a.actors.length
     });
 
-    // Convert the arrays to CSV strings
-    let gToACsvContent = 'genre,actors\n' + gToARows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
-    let aToMCsvContent = 'actor,movies\n' + aToMRows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
-    let aToACsvContent = 'actor,actors\n' + aToARows.map(e => e.map(s => '"' + s + '"').join(',')).join('\n');
-
     // Log the strings so they can be pasted into CSV files
-    console.log(gToACsvContent);
-    console.log(aToMCsvContent);
-    console.log(aToACsvContent);
+    console.log(JSON.stringify(gToARows));
+    console.log(JSON.stringify(aToGRows));
+    console.log(JSON.stringify(aToARows));
   });
 }

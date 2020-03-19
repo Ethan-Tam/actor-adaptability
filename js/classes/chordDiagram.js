@@ -36,29 +36,50 @@ class ChordDiagram {
     vis.line = d3.line()
         .x(d => d.x)
         .y(d => d.y)
-        .curve(d3.curveBundle.beta(0.7));
+        .curve(d3.curveBundle.beta(2.5));
 
     // Create the colour scale
     vis.scale = d3.scaleOrdinal(d3.schemeTableau10)
         .domain(vis.genres);
 
-    let genreStartPositionMap = {};
-    let numShiftsPerGap = 100;
-    let nextAngle = 0;
-    let angleShift = 2 * Math.PI / (vis.nodes.length + numShiftsPerGap * vis.genres.length);
     vis.outerRadius = 300;
+    let genreStartPositionMap = {};
+    let gapAngle = 5;
+    let nextAngle = 0;
+    vis.rectWidth = 2 * Math.PI * vis.outerRadius / (vis.nodes.length + gapAngle * vis.genres.length)
+    let angleShift = 360 / (vis.nodes.length + gapAngle * vis.genres.length);
 
     vis.idToNode = {};
     let lastGenre = ""
     vis.nodes.forEach((n, i) => {
       nextAngle += angleShift;
       if (lastGenre !== n.genre) {
-        nextAngle += angleShift * numShiftsPerGap;
+        nextAngle += angleShift * gapAngle;
+        lastGenre = n.genre;
       }
-      lastGenre = n.genre;
-      n.x = vis.centreX + Math.cos(nextAngle) * vis.outerRadius;
-      n.y = vis.centreY + Math.sin(nextAngle) * vis.outerRadius;
+      n.ang = nextAngle - angleShift / 2;
+      n.x = vis.centreX + Math.cos(Math.PI * nextAngle / 180) * vis.outerRadius;
+      n.y = vis.centreY + Math.sin(Math.PI * nextAngle / 180) * vis.outerRadius;
       vis.idToNode[n.uid] = n;
+    });
+
+    vis.links.forEach(l => {
+      l.source = vis.idToNode[l.source];
+      l.target = vis.idToNode[l.target];
+    });
+
+    vis.paths = vis.links.map(l => {
+      let line = [];
+      line.push({ x: l.source.x, y: l.source.y,
+        c: d3.color(vis.scale(l.source.genre)),
+        s: l.source.genre });
+      let meanX = (l.source.x + l.target.x + vis.centreX) / 3;
+      let meanY = (l.source.y + l.target.y + vis.centreY) / 3;
+      line.push({ x: meanX, y: meanY });
+      line.push({ x: l.target.x, y: l.target.y,
+        c: d3.color(vis.scale(l.target.genre)),
+        s: l.target.genre });
+      return line;
     });
   }
 
@@ -67,21 +88,33 @@ class ChordDiagram {
 
     // Render the lines
     vis.linkLines = vis.chart.selectAll('.link')
-        .data(vis.links)
+        .data(vis.paths)
       .join('path')
         .attr('class', 'link')
-        .attr('stroke-width', 2)
-        .attr('stroke', 'white')
-        .attr('fill', 'none');
+        .attr('stroke-width', vis.rectWidth)
+        .attr('stroke', d => {
+          let colour = d[0].c;
+          return colour;
+        })
+        .attr('fill', 'none')
+        .attr('d', d => vis.line(d))
+      .transition()
+        .attr('opacity', d => vis.selected.length === 0 ||
+          (vis.selected.includes(d[0].s) && vis.selected.includes(d[2].s)) ? 0.3 : 0);
 
     // Render the nodes
     vis.nodeCircles = vis.chart.selectAll('.node')
         .data(vis.nodes, d => d.name)
-      .join('circle')
+      .join('rect')
         .attr('class', 'node')
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
         .attr('r', vis.radius)
-        .attr('fill', d => vis.scale(d.genre));
+        .attr('fill', d => vis.scale(d.genre))
+        .attr('x', vis.centreX + vis.outerRadius)
+        .attr('y', vis.centreY)
+        .attr('width', d => vis.aToG[d.name].length / 10 * 40)
+        .attr('height', vis.rectWidth)
+        .attr('transform', d => `rotate(${d.ang + ',' + vis.centreX + ',' + vis.centreY})`)
+      .transition()
+        .attr('opacity', d => vis.selected.length === 0 || vis.selected.includes(d.genre) ? 1 : 0);
   }
 }
