@@ -7,80 +7,47 @@ let actorToMovie;
 let genreToActor;
 
 let chordDiagram;
+let matrix;
+
+let hoveredGenre = null;
+const hover = genre => {
+  chordDiagram.hovered = genre;
+  chordDiagram.render();
+};
+
+let selectedGenre = null;
+const select = genre => {
+  selectedGenre = genre === selectedGenre ? null : genre;
+  chordDiagram.selected = selectedGenre;
+  chordDiagram.render();
+};
 
 const initializeChordDiagram = data => {
-  const getUid = (g, a) => g + "_" + a;
-
-  const shuffle = a => {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  const nextGenre = n => {
-    let aGenres = actorToGenre[n.name];
-    let next = aGenres[(aGenres.findIndex(d => d === n.genre) + 1) % aGenres.length];
-    let start = genres.findIndex(d => d === n.genre);
-    let i = start;
-    while (genres[i] !== next) {
-      i = (i + 1) % genres.length;
-    }
-    if (i < start) {
-      return i + genres.length - start;
-    } else {
-      return i - start;
-    }
-  }
-
-  let nodes = [];
-  let genres = [];
-  let actorToGenre = {};
-  shuffle(data.sort((a, b) => {
-    return b.actors.length - a.actors.length;
-  }).slice(0, 5)).forEach(d => {
-    let genre = d.genre;
-    genres.push(genre);
-    d.actors.forEach(a => {
-      nodes.push({genre: genre, name: a, uid: getUid(genre, a)});
-      if (a in actorToGenre) {
-        actorToGenre[a].push(genre);
-      } else {
-        actorToGenre[a] = [genre];
-      }
-    });
-  });
-
-  nodes.sort((a, b) => {
-    if (a.genre === b.genre) {
-      return nextGenre(b) - nextGenre(a);
-    } else {
-      return 0;
-    }
-  })
-
-  nodes = nodes.filter(n => {
-    return actorToGenre[n.name].length > 1;
-  });
-
-  let links = [];
-  Object.entries(actorToGenre).forEach(([a, gs]) => {
-    if (gs.length > 1) {
-      gs.forEach((g, i) => {
-        if (gs.length === 2 && i === 1) {
-          return;
-        }
-        for (let j = i + 1; j < gs.length; j++) {
-          let ng = gs[j];
-          links.push({
-            source: getUid(g, a),
-            target: getUid(ng, a),
-            type: getUid(g, ng)
-          });
-        }
+  const countDuplicates = (l1, l2) => {
+    let count = 0;
+    l1.forEach(ai => {
+      l2.forEach(aj => {
+        if (ai === aj)
+          count++;
       });
-    }
+    });
+    return count;
+  };
+
+  let numGenres = 5;
+  let topGenres = genreToActor.slice(0, numGenres);
+  matrix = [];
+
+  let keys = d3.range(5);
+  keys.forEach(i => {
+    let row = [];
+    keys.forEach(j => {
+      if (j === i)
+        row.push(0);
+      else
+        row.push(countDuplicates(topGenres[i].actors, topGenres[j].actors));
+    });
+    matrix.push(row);
   });
 
   chordDiagram = new ChordDiagram({
@@ -89,14 +56,14 @@ const initializeChordDiagram = data => {
     containerHeight: 800
   });
 
-  chordDiagram.nodes = nodes;
-  chordDiagram.genres = genres;
-  chordDiagram.links = links;
-  chordDiagram.aToG = actorToGenre;
-  chordDiagram.selected = [];//["Action", "Drama"];
+  chordDiagram.genres = topGenres.map(g => g.genre);
+  chordDiagram.matrix = matrix;
+  chordDiagram.hover = hover;
+  chordDiagram.hovered = null;
+  chordDiagram.select = select;
+  chordDiagram.selected = null;
 
   chordDiagram.initVis();
-  chordDiagram.render();
 };
 
 Promise.all([
@@ -110,5 +77,5 @@ Promise.all([
   actorToMovie = files[2];
   genreToActor = files[3];
 
-  //initializeChordDiagram(files[3]);
+  initializeChordDiagram(files[3]);
 });
