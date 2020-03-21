@@ -33,7 +33,7 @@ const processData = () => {
             }
           });
           if (isNew)
-            actorToGenres[name].push({name: g, count: 1});
+            actorToGenres[name].push({genre: g, count: 1});
         }
 
         // Handle the actor to actor dict

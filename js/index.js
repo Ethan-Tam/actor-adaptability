@@ -3,22 +3,22 @@
 
 let movieData;
 let actorToActor;
-let actorToMovie;
+let actorToGenre;
 let genreToActor;
 
 let chordDiagram;
 let matrix;
 
-let hoveredGenre = null;
-const hover = genre => {
-  chordDiagram.hovered = genre;
+let hovered = null;
+const hover = s => {
+  chordDiagram.hovered = s;
   chordDiagram.render();
 };
 
-let selectedGenre = null;
-const select = genre => {
-  selectedGenre = genre === selectedGenre ? null : genre;
-  chordDiagram.selected = selectedGenre;
+let selected = null;
+const select = s => {
+  selected = s === selected ? null : s;
+  chordDiagram.selected = selected;
   chordDiagram.render();
 };
 
@@ -58,6 +58,7 @@ const initializeChordDiagram = data => {
 
   chordDiagram.genres = topGenres.map(g => g.genre);
   chordDiagram.matrix = matrix;
+  chordDiagram.nodes = actorToGenre;
   chordDiagram.hover = hover;
   chordDiagram.hovered = null;
   chordDiagram.select = select;
@@ -74,7 +75,7 @@ Promise.all([
 ]).then(files => {
   moveData = files[0];
   actorToActor = files[1];
-  actorToMovie = files[2];
+  actorToGenre = files[2];
   genreToActor = files[3];
 
   initializeChordDiagram(files[3]);

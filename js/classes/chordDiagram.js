@@ -24,12 +24,50 @@ class ChordDiagram {
     vis.chart = vis.svg.append('g')
         .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
+    // Set up background for click off events
+    vis.chart.selectAll("rect")
+        .data([null])
+      .join("rect")
+        .attr("id", "background")
+        .attr("fill", "white")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", vis.width)
+        .attr("height", vis.height)
+        .on("click", d => vis.select(null));
+
     // Set up constants
     vis.centreX = vis.width / 2;
     vis.centreY = vis.height / 2;
 
-    vis.fullOpacity = 0.8;
+    vis.fullOpacity = 1;
     vis.fadeOpacity = 0.3;
+
+    vis.selectColour = "chartreuse";
+
+    vis.outerRadius = 260;
+    vis.innerRadius = vis.outerRadius - 15;
+
+    vis.nodeRadius = 4;
+
+    vis.nodeCircles = vis.chart.selectAll('.node');
+    vis.linkLines = vis.chart.selectAll('.link');
+
+    // Process the nodes
+    vis.nodes.forEach(n => {
+      n.genres = n.genres.filter(g => vis.genres.includes(g.genre));
+    });
+    vis.nodes = vis.nodes.filter(n => n.genres.length > 0);
+
+    // Create colour map
+    vis.colourScale = d3.scaleOrdinal(d3.schemeTableau10)
+        .domain(d3.range(vis.genres.length));
+
+    // Create genre index map
+    vis.genreMap = {};
+    vis.genres.forEach((g, i) => {
+      vis.genreMap[g] = i;
+    });
 
     // Create chord
     vis.chord = d3.chord()
@@ -37,110 +75,220 @@ class ChordDiagram {
         .sortSubgroups(d3.ascending)
         (vis.matrix);
 
-    // Create colour gradients map
-    vis.colourScale = d3.scaleOrdinal(d3.schemeTableau10)
-        .domain(d3.range(vis.genres.length));
+    // Create genre position map
+    vis.genrePos = {};
+    vis.genres.forEach(g => {
+      let group = vis.chord.groups[vis.genreMap[g]];
+      let x = vis.getXFromAngle(group, (vis.innerRadius + vis.outerRadius) / 2);
+      let y = vis.getYFromAngle(group, (vis.innerRadius + vis.outerRadius) / 2);
+      vis.genrePos[g] = { x: x, y: y };
+    });
 
-    // Creating the fill gradient
-    vis.getGradID = d => "linkGrad-" + d.source.index + "-" + d.target.index;
+    // Create the links
+    vis.links = [];
+    vis.actorToLinks = {};
+    vis.nodes.forEach(n => {
+      let links = [];
+      n.genres.forEach(g => {
+        links.push({ actor: n.actor, genre: g.genre,
+          source: { x: 0, y: 0 }, target: vis.genrePos[g.genre] });
+      });
+      vis.actorToLinks[n.actor] = d3.range(links.length).map(l => l + vis.links.length);
+      vis.links.push(...links);
+    });
 
-    vis.outerRadius = 350;
-    vis.innerRadius = vis.outerRadius - 15;
-
-    vis.grads = vis.svg.append("defs")
-        .selectAll("linearGradient")
-        .data(vis.chord)
-      .join("linearGradient")
-        .attr("id", vis.getGradID)
-        .attr("gradientUnits", "userSpaceOnUse")
-        .attr("x1", (d, i) => vis.innerRadius * Math.cos((d.source.endAngle-d.source.startAngle) / 2 + d.source.startAngle - Math.PI/2))
-        .attr("y1", (d, i) => vis.innerRadius * Math.sin((d.source.endAngle-d.source.startAngle) / 2 + d.source.startAngle - Math.PI/2))
-        .attr("x2", (d, i) => vis.innerRadius * Math.cos((d.target.endAngle-d.target.startAngle) / 2 + d.target.startAngle - Math.PI/2))
-        .attr("y2", (d, i) => vis.innerRadius * Math.sin((d.target.endAngle-d.target.startAngle) / 2 + d.target.startAngle - Math.PI/2));
-
-    vis.grads.append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", d => vis.colourScale(d.source.index));
-
-    vis.grads.append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", d => vis.colourScale(d.target.index));
-
+    // Draw arcs
     vis.arcs = vis.chart.datum(vis.chord)
-        .selectAll("g")
-        .data(d => d.groups, d => vis.genres[d.index])
-      .join("g");
+       .selectAll("g")
+       .data(d => d.groups, d => vis.genres[d.index])
+      .join("g")
+      .append("path")
+        .attr("id", d => "group" + d.index)
+        .attr("fill", d => vis.colourScale(d.index))
+        .attr("stroke", "black")
+        .attr("d", d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
+        .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
+        .attr('opacity', vis.fullOpacity)
+        .on("click", d => vis.select(vis.genres[d.index]))
+        .on("mouseover", d => vis.hover(vis.genres[d.index]))
+        .on("mouseout", d => vis.hover(null));
+
+    // Draw arc labels
     vis.labels = vis.chart
         .selectAll("text")
         .data(vis.chord.groups, d => vis.genres[d.index])
-      .join("text");
-    vis.paths = vis.chart.datum(vis.chord)
-        .selectAll("path")
-        .data(d => d, d => vis.getGenrePair(d))
-      .join("path");
-
-    // Draw arcs
-    vis.arcs
-      .append("path")
-        .attr("id", d => "group" + d.index)
-        .style("fill", d => vis.colourScale(d.index))
-        .style("stroke", "black")
-        .attr("d", d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
-        .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
-      .transition(800)
-        .attr("opacity", 1);
-
-    // Draw arc labels
-    vis.labels
+      .join("text")
         .attr("dx", 10)
         .attr("dy", -8)
       .append("textPath")
         .attr("xlink:href", d => "#group" + d.index)
         .text(d => vis.genres[d.index])
-        .style("fill", "black")
+        .attr("fill", d => vis.colourScale(d.index))
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
-      .transition(800)
-        .attr("opacity", 1);
+        .attr('opacity', vis.fullOpacity);
 
-    // Draw ribbons
-    vis.paths
-        .attr("id", d => vis.getGenrePair(d))
-        .attr("class", d => "chord chord-" + d.source.index + " chord-" + d.target.index)
-        .style("fill", d => `url(#${vis.getGradID(d)})`)
-        .attr("d", d3.ribbon().radius(vis.innerRadius - 5))
-        .style("stroke", "black")
-        .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
-        .on("mouseover", d => {
-          vis.hover(vis.getGenrePair(d));
-          d3.select("#" + vis.getGenrePair(d)).raise();
-        })
-        .on("mouseout", d => {
-          vis.hover(null);
-        })
-        .on("click",  d => {
-          vis.select(vis.getGenrePair(d))
-        })
-      .transition(800)
-        .attr("opacity", vis.fullOpacity);
+    // Create network simulation
+    vis.tickCount = 0;
+    vis.sim = d3.forceSimulation(vis.nodes)
+        // Make them not collide with each other
+        .force('collide', d3.forceCollide().radius(vis.nodeRadius).strength(1))
+        // Make force towards centre
+        .force('x', d3.forceX().x(d => {
+          let radius =d.genres.length > 1 ? vis.innerRadius : 1.42 * vis.innerRadius;
+          let points = d.genres.map(g => g.count * vis.getXFromAngle(vis.chord.groups[vis.genreMap[g.genre]],
+                                                                     radius));
+          let sum = points.reduce((acc, cv) => acc + cv, 0);
+          let count = d.genres.reduce((acc, cv) => acc + cv.count, 0);
+          return sum / count;
+        }))
+        .force('y', d3.forceY().y(d => {
+          let radius =d.genres.length > 1 ? vis.innerRadius : 1.42 * vis.innerRadius;
+          let points = d.genres.map(g => g.count * vis.getYFromAngle(vis.chord.groups[vis.genreMap[g.genre]],
+                                                                     radius));
+          let sum = points.reduce((acc, cv) => acc + cv, 0);
+          let count = d.genres.reduce((acc, cv) => acc + cv.count, 0);
+          return sum / count;
+        }))
+        // On tick update nodes and edges
+        .on('tick', () => {
+          vis.tickCount += 1;
+          vis.nodeCircles
+              .attr('cx', d => {
+                vis.actorToLinks[d.actor].forEach(l => {
+                  vis.links[l].source.x = d.x;
+                });
+                return d.x;
+              })
+              .attr('cy', d => {
+                vis.actorToLinks[d.actor].forEach(l => {
+                  vis.links[l].source.y = d.y;
+                });
+                return d.y;
+              });
+        });
+
+    // Reader does not have to see node movement, fast forward 300 ticks
+    vis.sim.tick(300);
+
+    // Set this so lines must be rendered on first select
+    vis.linesRendered = false;
+
+    // Render the nodes
+    vis.nodeCircles = vis.nodeCircles
+          .data(vis.nodes, d => d.actor)
+        .join('circle')
+          .attr('class', 'node')
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y)
+          .attr('r', vis.nodeRadius)
+          .attr('fill', d => {
+
+            if (d.genres.length > 1) {
+              d.genres.sort((a, b) => {
+                return b.count - a.count;
+              });
+              if (d.genres[0].count === d.genres[1].count)
+                d.unhoveredColour = "grey";
+              else
+                d.unhoveredColour = vis.colourScale(vis.genreMap[d.genres[0].genre]);
+            } else
+              d.unhoveredColour = vis.colourScale(vis.genreMap[d.genres[0].genre]);
+            return d.unhoveredColour;
+          })
+          .attr('opacity', vis.fullOpacity)
+          .attr('actor', d => d.actor)
+          .attr('numGenres', d => d.genres.length)
+          .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
+          .on("click", d => vis.select(d))
+          .on("mouseover", d => vis.hover(d))
+          .on("mouseout", d => vis.hover(null));
   }
 
   render() {
     let vis = this;
 
-    vis.paths.transition(100).attr("opacity", d => {
-      if (vis.selected !== null) {
-        return vis.selected === vis.getGenrePair(d) ? 0 : vis.fadeOpacity;
-      } else if (vis.hovered !== null) {
-        return vis.hovered === vis.getGenrePair(d) ? vis.fullOpacity : vis.fadeOpacity;
-      } else {
-        return vis.fullOpacity;
-      }
-    });
+    // If we haven't before, render links
+    if (!vis.linesRendered)
+      vis.renderLines();
+
+    // Select/hover links
+    vis.linkLines
+      .transition(100)
+        .attr("opacity", d => {
+          if (vis.selected !== null &&
+              (vis.selected === d.genre ||
+               vis.selected.actor === d.actor))
+            return 1;
+          return 0;
+        });
+
+    // Select/hover nodes
+    vis.nodeCircles
+        .attr("fill", d => {
+          if (vis.hovered === d)
+            return vis.selectColour;
+          else
+            return d.unhoveredColour;
+        })
+      .transition(100)
+        .attr("opacity", d => {
+          if (vis.selected === null ||
+              vis.selected === d ||
+              d.genres.map(g => g.genre).includes(vis.selected))
+            return vis.fullOpacity;
+          else
+            return vis.fadeOpacity;
+        });;
+
+    // Select/hover arcs
+    vis.arcs
+        .attr("fill", d => {
+          if (vis.hovered === vis.genres[d.index])
+            return vis.selectColour;
+          else
+            return vis.colourScale(d.index);
+        })
+      .transition(100)
+        .attr("opacity", d => {
+          if (vis.selected === null ||
+              vis.selected === vis.genres[d.index] ||
+              (vis.selected.genres !== undefined &&
+               vis.selected.genres.map(g => g.genre).includes(vis.genres[d.index])))
+            return vis.fullOpacity;
+          else
+            return vis.fadeOpacity;
+        });
   }
 
-  getGenrePair(d) {
+  renderLines() {
     let vis = this;
-    return vis.genres[d.source.index] + vis.genres[d.target.index];
+
+    // Draw links
+    vis.linkLines = vis.chart
+        .selectAll(".link")
+        .data(vis.links)
+      .join("path")
+        .attr('class', 'link')
+        .attr('stroke-width', 2)
+        .attr('stroke', 'lightgrey')
+        .attr('fill', 'none')
+        .attr('d', (d, i) => {
+          let line = 'M' + (d.source.x + vis.centreX) + ' ' + (d.source.y + vis.centreY)
+              + ' L' + (d.target.x + vis.centreX) + ' ' + (d.target.y + vis.centreY);
+          return line;
+        });
+
+    d3.selectAll(".link").lower();
+    d3.selectAll("#background").lower();
+    vis.linesRendered = true;
+  }
+
+  getXFromAngle(g, radius) {
+    return Math.cos((g.startAngle + g.endAngle) / 2 - Math.PI / 2) * radius;
+  }
+
+  getYFromAngle(g, radius) {
+    return Math.sin((g.startAngle + g.endAngle) / 2 - Math.PI / 2) * radius;
   }
 }
