@@ -9,6 +9,10 @@ let genreToActor;
 let network;
 let matrix;
 
+let numGenres = 7;
+
+let colourScale;
+
 let hovered = null;
 const hover = s => {
   network.hovered = s;
@@ -34,17 +38,15 @@ const initializeNetwork = data => {
     return count;
   };
 
-  let numGenres = 6;
-  let topGenres = genreToActor.slice(0, numGenres);
+  let topGenres = genreToActor.slice(0, numGenres - 1);
   let other = [];
-  genreToActor.slice(numGenres, genreToActor.length).forEach(d => {
+  genreToActor.slice(numGenres - 1, genreToActor.length).forEach(d => {
     other.push(...d.actors);
   });
   other = Array.from(new Set(other));
   topGenres.push({ genre: "Other", actors: other });
   matrix = [];
 
-  numGenres++;
   let keys = d3.range(numGenres);
   keys.forEach(i => {
     let row = [];
@@ -73,6 +75,7 @@ const initializeNetwork = data => {
       d.genres.push({ genre: "Other", count: otherCount });
   });
 
+  network.colourScale = colourScale;
   network.genres = genres;
   network.matrix = matrix;
   network.nodes = actors;
@@ -94,6 +97,9 @@ Promise.all([
   actorToActor = files[1];
   actorToGenre = files[2];
   genreToActor = files[3];
+
+  colourScale = d3.scaleOrdinal(d3.schemeTableau10)
+      .domain(d3.range(numGenres));
 
   initializeNetwork(files[3]);
 });

@@ -75,10 +75,6 @@ class Network {
     vis.nodeCircles = vis.chart.selectAll('.node');
     vis.linkLines = vis.chart.selectAll('.link');
 
-    // Create colour map
-    vis.colourScale = d3.scaleOrdinal(d3.schemeTableau10)
-        .domain(d3.range(vis.genres.length));
-
     // Create genre index map
     vis.genreMap = {};
     vis.genres.forEach((g, i) => {
