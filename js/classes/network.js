@@ -36,6 +36,28 @@ class Network {
         .attr("height", vis.height)
         .on("click", d => vis.select(null));
 
+    // Set up tooltip
+    vis.tg = vis.chart.append("g");
+    vis.tb = vis.tg.append("rect")
+        .attr("fill", "black")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 0)
+        .attr("height", 18);
+    vis.tr = vis.tg.append("rect")
+        .attr("fill", "white")
+        .attr("x", 1)
+        .attr("y", 1)
+        .attr("width", 0)
+        .attr("height", 16);
+    vis.tt = vis.tg.append("text")
+        .attr("fill", "black")
+        .attr("x", 3)
+        .attr("y", 15)
+        .attr('font-size', 14)
+        .text("");
+
+
     // Set up constants
     vis.centreX = vis.width / 2;
     vis.centreY = vis.height / 2;
@@ -45,19 +67,13 @@ class Network {
 
     vis.selectColour = "chartreuse";
 
-    vis.outerRadius = 260;
+    vis.outerRadius = 220;
     vis.innerRadius = vis.outerRadius - 15;
 
     vis.nodeRadius = 4;
 
     vis.nodeCircles = vis.chart.selectAll('.node');
     vis.linkLines = vis.chart.selectAll('.link');
-
-    // Process the nodes
-    vis.nodes.forEach(n => {
-      n.genres = n.genres.filter(g => vis.genres.includes(g.genre));
-    });
-    vis.nodes = vis.nodes.filter(n => n.genres.length > 0);
 
     // Create colour map
     vis.colourScale = d3.scaleOrdinal(d3.schemeTableau10)
@@ -99,9 +115,10 @@ class Network {
 
     // Draw arcs
     vis.arcs = vis.chart.datum(vis.chord)
-       .selectAll("g")
+       .selectAll("g.arc")
        .data(d => d.groups, d => vis.genres[d.index])
       .join("g")
+        .attr("class", "arc")
       .append("path")
         .attr("id", d => "group" + d.index)
         .attr("fill", d => vis.colourScale(d.index))
@@ -115,11 +132,12 @@ class Network {
 
     // Draw arc labels
     vis.labels = vis.chart
-        .selectAll("text")
+        .selectAll("text.arc")
         .data(vis.chord.groups, d => vis.genres[d.index])
       .join("text")
         .attr("dx", 10)
         .attr("dy", -8)
+        .attr("class", "arc")
       .append("textPath")
         .attr("xlink:href", d => "#group" + d.index)
         .text(d => vis.genres[d.index])
@@ -134,7 +152,7 @@ class Network {
         .force('collide', d3.forceCollide().radius(vis.nodeRadius).strength(1))
         // Make force towards centre
         .force('x', d3.forceX().x(d => {
-          let radius =d.genres.length > 1 ? vis.innerRadius : 1.42 * vis.innerRadius;
+          let radius =d.genres.length > 1 ? 0.96 * vis.innerRadius : 1.5 * vis.innerRadius;
           let points = d.genres.map(g => g.count * vis.getXFromAngle(vis.chord.groups[vis.genreMap[g.genre]],
                                                                      radius));
           let sum = points.reduce((acc, cv) => acc + cv, 0);
@@ -142,7 +160,7 @@ class Network {
           return sum / count;
         }))
         .force('y', d3.forceY().y(d => {
-          let radius =d.genres.length > 1 ? vis.innerRadius : 1.42 * vis.innerRadius;
+          let radius =d.genres.length > 1 ? 0.96 * vis.innerRadius : 1.5 * vis.innerRadius;
           let points = d.genres.map(g => g.count * vis.getYFromAngle(vis.chord.groups[vis.genreMap[g.genre]],
                                                                      radius));
           let sum = points.reduce((acc, cv) => acc + cv, 0);
@@ -198,8 +216,17 @@ class Network {
           .attr('numGenres', d => d.genres.length)
           .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
           .on("click", d => vis.select(d))
-          .on("mouseover", d => vis.hover(d))
-          .on("mouseout", d => vis.hover(null));
+          .on("mouseover", d => {
+            vis.hover(d);
+            vis.updateTooltip(d);
+            vis.tg.attr("opacity", 1);
+            vis.tg.raise();
+          })
+          .on("mouseout", d => {
+            vis.hover(null)
+            vis.tg.attr("opacity", 0);
+            vis.tg.lower();
+          });
   }
 
   render() {
@@ -218,7 +245,8 @@ class Network {
     // Select/hover nodes
     vis.nodeCircles
         .attr("fill", d => {
-          if (vis.hovered === d)
+          if (vis.hovered === d ||
+              d.genres.map(g => g.genre).includes(vis.hovered))
             return vis.selectColour;
           else
             return d.unhoveredColour;
@@ -251,6 +279,8 @@ class Network {
           else
             return vis.fadeOpacity;
         });
+
+    vis.tg.raise();
   }
 
   renderLines() {
@@ -281,5 +311,18 @@ class Network {
 
   getYFromAngle(g, radius) {
     return Math.sin((g.startAngle + g.endAngle) / 2 - Math.PI / 2) * radius;
+  }
+
+  updateTooltip(d) {
+    let vis = this;
+
+    vis.tg.attr('transform', `translate(${vis.centreX + d.x},${vis.centreY + d.y - 24})`);
+    vis.tt.text(d.actor);
+
+    let innerWidth = vis.tt.node().getBBox().width;
+
+    vis.tb.attr('width', Math.ceil(innerWidth) + 6);
+    vis.tr.attr('width', Math.ceil(innerWidth) + 4);
+
   }
 }

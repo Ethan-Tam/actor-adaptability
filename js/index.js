@@ -34,11 +34,18 @@ const initializeNetwork = data => {
     return count;
   };
 
-  let numGenres = 5;
+  let numGenres = 6;
   let topGenres = genreToActor.slice(0, numGenres);
+  let other = [];
+  genreToActor.slice(numGenres, genreToActor.length).forEach(d => {
+    other.push(...d.actors);
+  });
+  other = Array.from(new Set(other));
+  topGenres.push({ genre: "Other", actors: other });
   matrix = [];
 
-  let keys = d3.range(5);
+  numGenres++;
+  let keys = d3.range(numGenres);
   keys.forEach(i => {
     let row = [];
     keys.forEach(j => {
@@ -56,9 +63,19 @@ const initializeNetwork = data => {
     containerHeight: 800
   });
 
-  network.genres = topGenres.map(g => g.genre);
+  let genres = topGenres.map(g => g.genre);
+  let actors = actorToGenre;
+  actors.forEach(d => {
+    let otherCount = d.genres.filter(g => !genres.includes(g.genre))
+                             .reduce((acc, cv) => acc + cv.count, 0);
+    d.genres = d.genres.filter(g => genres.includes(g.genre));
+    if (otherCount > 0)
+      d.genres.push({ genre: "Other", count: otherCount });
+  });
+
+  network.genres = genres;
   network.matrix = matrix;
-  network.nodes = actorToGenre;
+  network.nodes = actors;
   network.hover = hover;
   network.hovered = null;
   network.select = select;
