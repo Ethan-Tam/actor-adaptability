@@ -129,7 +129,6 @@ class Network {
         .attr('opacity', vis.fullOpacity);
 
     // Create network simulation
-    vis.tickCount = 0;
     vis.sim = d3.forceSimulation(vis.nodes)
         // Make them not collide with each other
         .force('collide', d3.forceCollide().radius(vis.nodeRadius).strength(1))
@@ -152,7 +151,6 @@ class Network {
         }))
         // On tick update nodes and edges
         .on('tick', () => {
-          vis.tickCount += 1;
           vis.nodeCircles
               .attr('cx', d => {
                 vis.actorToLinks[d.actor].forEach(l => {
@@ -166,6 +164,8 @@ class Network {
                 });
                 return d.y;
               });
+          vis.renderLines();
+          vis.render();
         });
 
     // Reader does not have to see node movement, fast forward 300 ticks
@@ -208,11 +208,6 @@ class Network {
   render() {
     let vis = this;
 
-    // If we haven't before, render links
-    if (!vis.linesRendered)
-      vis.renderLines();
-
-    // Select/hover links
     vis.linkLines
       .transition(100)
         .attr("opacity", d => {
