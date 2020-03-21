@@ -1,5 +1,5 @@
 vis.fadeOpacity// Class for network visualization
-class ChordDiagram {
+class Network {
 
   constructor(_config) {
     this.config = {

@@ -6,23 +6,23 @@ let actorToActor;
 let actorToGenre;
 let genreToActor;
 
-let chordDiagram;
+let network;
 let matrix;
 
 let hovered = null;
 const hover = s => {
-  chordDiagram.hovered = s;
-  chordDiagram.render();
+  network.hovered = s;
+  network.render();
 };
 
 let selected = null;
 const select = s => {
   selected = s === selected ? null : s;
-  chordDiagram.selected = selected;
-  chordDiagram.render();
+  network.selected = selected;
+  network.render();
 };
 
-const initializeChordDiagram = data => {
+const initializeNetwork = data => {
   const countDuplicates = (l1, l2) => {
     let count = 0;
     l1.forEach(ai => {
@@ -50,21 +50,21 @@ const initializeChordDiagram = data => {
     matrix.push(row);
   });
 
-  chordDiagram = new ChordDiagram({
-    parentElement: '#chord-diagram',
+  network = new Network({
+    parentElement: '#network',
     containerWidth: 800,
     containerHeight: 800
   });
 
-  chordDiagram.genres = topGenres.map(g => g.genre);
-  chordDiagram.matrix = matrix;
-  chordDiagram.nodes = actorToGenre;
-  chordDiagram.hover = hover;
-  chordDiagram.hovered = null;
-  chordDiagram.select = select;
-  chordDiagram.selected = null;
+  network.genres = topGenres.map(g => g.genre);
+  network.matrix = matrix;
+  network.nodes = actorToGenre;
+  network.hover = hover;
+  network.hovered = null;
+  network.select = select;
+  network.selected = null;
 
-  chordDiagram.initVis();
+  network.initVis();
 };
 
 Promise.all([
@@ -78,5 +78,5 @@ Promise.all([
   actorToGenre = files[2];
   genreToActor = files[3];
 
-  initializeChordDiagram(files[3]);
+  initializeNetwork(files[3]);
 });
