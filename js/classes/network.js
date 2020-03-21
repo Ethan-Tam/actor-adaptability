@@ -328,10 +328,11 @@ class Network {
   updateTooltip(d) {
     let vis = this;
 
-    vis.tg.attr('transform', `translate(${vis.centreX + d.x},${vis.centreY + d.y - 24})`);
     vis.tt.text(d.actor);
 
     let innerWidth = vis.tt.node().getBBox().width;
+    let x = Math.min(vis.width - innerWidth - 12, vis.centreX + d.x)
+    vis.tg.attr('transform', `translate(${x},${vis.centreY + d.y - 24})`);
 
     vis.tb.attr('width', Math.ceil(innerWidth) + 6);
     vis.tr.attr('width', Math.ceil(innerWidth) + 4);
