@@ -70,7 +70,23 @@ class Network {
     vis.outerRadius = 220;
     vis.innerRadius = vis.outerRadius - 15;
 
-    vis.nodeRadius = 4;
+    // Create radius scale
+    vis.getNumMovies = d => {let n = d.genres.reduce((acc, cv) => acc + cv.count, 0);console.log(n);return n;};
+    let numMovies = vis.nodes.map(vis.getNumMovies);
+    console.log(d3.extent(numMovies));
+    vis.radiusScale = d3.scaleLinear()
+        .domain(d3.extent(numMovies))
+        .range([3, 7]);
+
+    // Create line thickness scale
+    let numMoviesPerGenre = [];
+    vis.nodes.forEach(d => {
+      let nums = d.genres.map(d => d.count);
+      numMoviesPerGenre.push(...nums);
+    });
+    vis.thicknessScale = d3.scaleLinear()
+        .domain(d3.extent(numMoviesPerGenre))
+        .range([1, 6]);
 
     vis.nodeCircles = vis.chart.selectAll('.node');
     vis.linkLines = vis.chart.selectAll('.link');
@@ -102,7 +118,7 @@ class Network {
     vis.nodes.forEach(n => {
       let links = [];
       n.genres.forEach(g => {
-        links.push({ actor: n.actor, genre: g.genre,
+        links.push({ actor: n.actor, genre: g.genre, thickness: vis.thicknessScale(g.count),
           source: { x: 0, y: 0 }, target: vis.genrePos[g.genre] });
       });
       vis.actorToLinks[n.actor] = d3.range(links.length).map(l => l + vis.links.length);
@@ -145,7 +161,7 @@ class Network {
     // Create network simulation
     vis.sim = d3.forceSimulation(vis.nodes)
         // Make them not collide with each other
-        .force('collide', d3.forceCollide().radius(vis.nodeRadius).strength(1))
+        .force('collide', d3.forceCollide().radius(d => vis.radiusScale(vis.getNumMovies(d))).strength(1))
         // Make force towards centre
         .force('x', d3.forceX().x(d => {
           let radius =d.genres.length > 1 ? 0.96 * vis.innerRadius : 1.5 * vis.innerRadius;
@@ -192,7 +208,7 @@ class Network {
           .attr('class', 'node')
           .attr('cx', d => d.x)
           .attr('cy', d => d.y)
-          .attr('r', vis.nodeRadius)
+          .attr('r', d => vis.radiusScale(vis.getNumMovies(d)))
           .attr('fill', d => {
 
             if (d.genres.length > 1) {
@@ -288,7 +304,7 @@ class Network {
         .data(vis.links)
       .join("path")
         .attr('class', 'link')
-        .attr('stroke-width', 2)
+        .attr('stroke-width', d => d.thickness)
         .attr('stroke', 'lightgrey')
         .attr('fill', 'none')
         .attr('d', (d, i) => {
