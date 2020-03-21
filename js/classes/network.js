@@ -171,9 +171,6 @@ class Network {
     // Reader does not have to see node movement, fast forward 300 ticks
     vis.sim.tick(300);
 
-    // Set this so lines must be rendered on first select
-    vis.linesRendered = false;
-
     // Render the nodes
     vis.nodeCircles = vis.nodeCircles
           .data(vis.nodes, d => d.actor)
@@ -276,7 +273,6 @@ class Network {
 
     d3.selectAll(".link").lower();
     d3.selectAll("#background").lower();
-    vis.linesRendered = true;
   }
 
   getXFromAngle(g, radius) {
