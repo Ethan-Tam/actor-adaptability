@@ -71,9 +71,8 @@ class Network {
     vis.innerRadius = vis.outerRadius - 15;
 
     // Create radius scale
-    vis.getNumMovies = d => {let n = d.genres.reduce((acc, cv) => acc + cv.count, 0);console.log(n);return n;};
+    vis.getNumMovies = d => d.genres.reduce((acc, cv) => acc + cv.count, 0);
     let numMovies = vis.nodes.map(vis.getNumMovies);
-    console.log(d3.extent(numMovies));
     vis.radiusScale = d3.scaleLinear()
         .domain(d3.extent(numMovies))
         .range([3, 7]);
