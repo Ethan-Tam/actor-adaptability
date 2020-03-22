@@ -41,21 +41,21 @@ class PieChart {
     let vis = this;
     let data;
     if (vis.selected == null) {
+      data = d3
+        .pie()
+        .sort(null)
+        .value(d => d.actors.length)(vis.initialData);
+      vis.labels = vis.chart
+        .selectAll('text')
+        .data(data)
+        .join('text')
+        .text('All Actors')
+        .attr('transform', `translate(${-32},${-130})`);
     } else {
       data = d3
         .pie()
         .sort(null)
         .value(d => d.count)(vis.selected.genres);
-      let segments = d3
-        .arc()
-        .innerRadius(0)
-        .outerRadius(100);
-      vis.chart
-        .selectAll('path')
-        .data(data)
-        .join('path')
-        .attr('d', segments)
-        .attr('fill', d => vis.colourScale[d.data.genre]);
       vis.labels = vis.chart
         .selectAll('text')
         .data(data)
@@ -66,5 +66,15 @@ class PieChart {
           `translate(${-vis.selected.actor.length * 4},${-130})`,
         );
     }
+    let segments = d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(100);
+    vis.chart
+      .selectAll('path')
+      .data(data)
+      .join('path')
+      .attr('d', segments)
+      .attr('fill', d => vis.colourScale[d.data.genre]);
   }
 }

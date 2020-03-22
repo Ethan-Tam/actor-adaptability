@@ -90,6 +90,7 @@ const initializePieChart = data => {
     containerWidth: 400,
     containerHeight: 400,
   });
+  piechart.initialData = data;
   piechart.colourScale = genreColourScale;
   piechart.genres = genres;
   piechart.initVis();
@@ -128,7 +129,7 @@ Promise.all([
     d.genres = d.genres.filter(g => genres.includes(g.genre));
     if (otherCount > 0) d.genres.push({ genre: 'Other', count: otherCount });
   });
-
+  console.log(topGenres)
   initializeNetwork(files[3]);
-  initializePieChart(files[2]);
+  initializePieChart(topGenres);
 });
