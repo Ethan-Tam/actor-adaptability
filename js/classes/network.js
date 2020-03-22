@@ -196,7 +196,8 @@ class Network {
           let line = 'M' + (d.source.x + vis.centreX) + ' ' + (d.source.y + vis.centreY)
               + ' L' + (d.target.x + vis.centreX) + ' ' + (d.target.y + vis.centreY);
           return line;
-        });
+        })
+        .on("click", d => vis.select(null));;
 
     d3.selectAll(".link").lower();
     d3.selectAll("#background").lower();
