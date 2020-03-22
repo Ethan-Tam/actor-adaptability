@@ -16,6 +16,16 @@ class Network {
   initVis() {
     let vis = this;
 
+    // Set up constants
+    vis.centreX = vis.width / 2;
+    vis.centreY = vis.height / 2;
+
+    vis.fullOpacity = 1;
+    vis.fadeOpacity = 0.3;
+
+    vis.outerRadius = 220;
+    vis.innerRadius = vis.outerRadius - 15;
+
     // Create the chart
     vis.svg = d3.select(vis.config.parentElement)
         .attr('width', vis.config.containerWidth)
@@ -56,17 +66,6 @@ class Network {
         .attr("y", 15)
         .attr('font-size', 14)
         .text("");
-
-
-    // Set up constants
-    vis.centreX = vis.width / 2;
-    vis.centreY = vis.height / 2;
-
-    vis.fullOpacity = 1;
-    vis.fadeOpacity = 0.3;
-
-    vis.outerRadius = 220;
-    vis.innerRadius = vis.outerRadius - 15;
 
     // Create radius scale
     vis.getNumMovies = d => d.genres.reduce((acc, cv) => acc + cv.count, 0);
@@ -121,40 +120,6 @@ class Network {
       vis.actorToLinks[n.actor] = d3.range(links.length).map(l => l + vis.links.length);
       vis.links.push(...links);
     });
-
-    // Draw arcs
-    vis.arcs = vis.chart.datum(vis.chord)
-       .selectAll("g.arc")
-       .data(d => d.groups, d => vis.genres[d.index])
-      .join("g")
-        .attr("class", "arc")
-      .append("path")
-        .attr("id", d => "group" + d.index)
-        .attr("fill", d => vis.colourScale(d.index))
-        .attr("stroke", "black")
-        .attr("d", d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
-        .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
-        .attr('opacity', vis.fullOpacity)
-        .on("click", d => vis.select(vis.genres[d.index]))
-        .on("mouseover", d => vis.hover(vis.genres[d.index]))
-        .on("mouseout", d => vis.hover(null));
-
-    // Draw arc labels
-    vis.labels = vis.chart
-        .selectAll("text.arc")
-        .data(vis.chord.groups, d => vis.genres[d.index])
-      .join("text")
-        .attr("dx", 10)
-        .attr("dy", -8)
-        .attr("class", "arc")
-      .append("textPath")
-        .attr("xlink:href", d => "#group" + d.index)
-        .text(d => vis.genres[d.index])
-        .attr("fill", d => vis.colourScale(d.index))
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
-        .attr('opacity', vis.fullOpacity);
-
     // Create network simulation
     vis.sim = d3.forceSimulation(vis.nodes)
         // Make them not collide with each other
@@ -197,6 +162,42 @@ class Network {
 
     // Reader does not have to see node movement, fast forward 300 ticks
     vis.sim.tick(300);
+
+    // Remove loading text
+    d3.select("#loading-text").remove();
+
+    // Draw arcs
+    vis.arcs = vis.chart.datum(vis.chord)
+       .selectAll("g.arc")
+       .data(d => d.groups, d => vis.genres[d.index])
+      .join("g")
+        .attr("class", "arc")
+      .append("path")
+        .attr("id", d => "group" + d.index)
+        .attr("fill", d => vis.colourScale(d.index))
+        .attr("stroke", "black")
+        .attr("d", d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
+        .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
+        .attr('opacity', vis.fullOpacity)
+        .on("click", d => vis.select(vis.genres[d.index]))
+        .on("mouseover", d => vis.hover(vis.genres[d.index]))
+        .on("mouseout", d => vis.hover(null));
+
+    // Draw arc labels
+    vis.labels = vis.chart
+        .selectAll("text.arc")
+        .data(vis.chord.groups, d => vis.genres[d.index])
+      .join("text")
+        .attr("dx", 10)
+        .attr("dy", -8)
+        .attr("class", "arc")
+      .append("textPath")
+        .attr("xlink:href", d => "#group" + d.index)
+        .text(d => vis.genres[d.index])
+        .attr("fill", d => vis.colourScale(d.index))
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr('opacity', vis.fullOpacity);
 
     // Render the nodes
     vis.nodeCircles = vis.nodeCircles
