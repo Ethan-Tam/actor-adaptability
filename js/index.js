@@ -8,7 +8,6 @@ let genreToActor;
 let actorLinks;
 
 let network;
-let matrix;
 
 let selectColour = "hotpink";
 let numGenres = 7;
@@ -44,7 +43,7 @@ const countDuplicates = (l1, l2) => {
 };
 
 const initializeNetwork = data => {
-  matrix = [];
+  let matrix = [];
   let keys = d3.range(numGenres);
   keys.forEach(i => {
     let row = [];
