@@ -75,6 +75,6 @@ class PieChart {
       .data(data)
       .join('path')
       .attr('d', segments)
-      .attr('fill', d => vis.colourScale[d.data.genre]);
+      .attr('fill', d => vis.colourScale(d.data.genre));
   }
 }

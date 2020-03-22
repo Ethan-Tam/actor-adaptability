@@ -15,15 +15,6 @@ let numGenres = 7;
 let genres;
 
 let colourScale;
-let genreColourScale = {
-  Action: '#4e79a7',
-  Drama: '#f28e2c',
-  Comedy: '#e15759',
-  Crime: '#76b7b2',
-  Adventure: '#59a14f',
-  Biography: '#edc949',
-  Other: '#af7aa1',
-};
 
 let hovered = null;
 const hover = s => {
@@ -31,13 +22,21 @@ const hover = s => {
   network.render();
 };
 
-let selected = null;
+let selectedActor = null;
+let selectedGenre = null;
 const select = s => {
-  if (selected === null) {
+  if (s === null) {
+    selectedActor = null;
+    selectedGenre = null;
+  } else {
+    if (genres.includes(s))
+      selectedGenre = s === selectedGenre ? null : s;
+    else
+      selectedActor = s === selectedActor ? null : s;
   }
-  selected = s === selected ? null : s;
-  network.selected = selected;
-  piechart.selected = selected;
+  network.selectedActor = selectedActor;
+  network.selectedGenre = selectedGenre;
+  piechart.selected = selectedActor;
   network.render();
   piechart.render();
 };
@@ -77,7 +76,8 @@ const initializeNetwork = data => {
   network.hover = hover;
   network.hovered = null;
   network.select = select;
-  network.selected = null;
+  network.selectedActor = null;
+  network.selectedGenre = null;
   network.selectColour = selectColour;
   network.links = actorLinks;
 
@@ -91,7 +91,7 @@ const initializePieChart = data => {
     containerHeight: 400,
   });
   piechart.initialData = data;
-  piechart.colourScale = genreColourScale;
+  piechart.colourScale = colourScale;
   piechart.genres = genres;
   piechart.initVis();
 };
@@ -108,9 +108,6 @@ Promise.all([
   actorToGenre = files[2];
   genreToActor = files[3];
   actorLinks = files[4];
-
-  // Create colour scale
-  colourScale = d3.scaleOrdinal(d3.schemeTableau10).domain(d3.range(numGenres));
 
   // Compute "Other" category
   topGenres = genreToActor.slice(0, numGenres - 1);
@@ -129,7 +126,10 @@ Promise.all([
     d.genres = d.genres.filter(g => genres.includes(g.genre));
     if (otherCount > 0) d.genres.push({ genre: 'Other', count: otherCount });
   });
-  console.log(topGenres)
+
+  // Create colour scale
+  colourScale = d3.scaleOrdinal(d3.schemeTableau10).domain(genres);
+
   initializeNetwork(files[3]);
   initializePieChart(topGenres);
 });

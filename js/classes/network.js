@@ -1,6 +1,5 @@
-vis.fadeOpacity// Class for network visualization
+// Class for network visualization
 class Network {
-
   constructor(_config) {
     this.config = {
       parentElement: _config.parentElement,
@@ -119,7 +118,7 @@ class Network {
         .attr("class", "arc")
       .append("path")
         .attr("id", d => "group" + d.index)
-        .attr("fill", d => vis.colourScale(d.index))
+        .attr("fill", d => vis.colourScale(vis.genres[d.index]))
         .attr("stroke", "black")
         .attr("d", d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
         .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
@@ -139,7 +138,7 @@ class Network {
       .append("textPath")
         .attr("xlink:href", d => "#group" + d.index)
         .text(d => vis.genres[d.index])
-        .attr("fill", d => vis.colourScale(d.index))
+        .attr("fill", d => vis.colourScale(vis.genres[d.index]))
         .attr("font-size", "20px")
         .attr("font-weight", "bold")
         .attr('opacity', vis.fullOpacity);
@@ -161,9 +160,9 @@ class Network {
               if (d.genres[0].count === d.genres[1].count)
                 d.unhoveredColour = "grey";
               else
-                d.unhoveredColour = vis.colourScale(vis.genreMap[d.genres[0].genre]);
+                d.unhoveredColour = vis.colourScale(d.genres[0].genre);
             } else
-              d.unhoveredColour = vis.colourScale(vis.genreMap[d.genres[0].genre]);
+              d.unhoveredColour = vis.colourScale(d.genres[0].genre);
             return d.unhoveredColour;
           })
           .attr('opacity', vis.fullOpacity)
@@ -212,9 +211,11 @@ class Network {
     vis.linkLines
       .transition(100)
         .attr("opacity", d => {
-          if (vis.selected !== null &&
-              (vis.selected === d.genre ||
-               vis.selected.actor === d.actor))
+          if ((vis.selectedActor === null ? true :
+                                            vis.selectedActor.actor === d.actor) &&
+              (vis.selectedGenre === null ? true :
+                                            vis.selectedGenre === d.genre) &&
+              (vis.selectedActor !== null || vis.selectedGenre !== null))
             return 1;
           return 0;
         });
@@ -230,9 +231,11 @@ class Network {
         })
       .transition(100)
         .attr("opacity", d => {
-          if (vis.selected === null ||
-              vis.selected === d ||
-              d.genres.map(g => g.genre).includes(vis.selected))
+          if ((vis.selectedActor === null ? true :
+                                           vis.selectedActor === d) &&
+              (vis.selectedGenre === null ? true :
+                                            d.genres.map(g => g.genre)
+                                                     .includes(vis.selectedGenre)))
             return vis.fullOpacity;
           else
             return vis.fadeOpacity;
@@ -244,14 +247,14 @@ class Network {
           if (vis.hovered === vis.genres[d.index])
             return vis.selectColour;
           else
-            return vis.colourScale(d.index);
+            return vis.colourScale(vis.genres[d.index]);
         })
       .transition(100)
         .attr("opacity", d => {
-          if (vis.selected === null ||
-              vis.selected === vis.genres[d.index] ||
-              (vis.selected.genres !== undefined &&
-               vis.selected.genres.map(g => g.genre).includes(vis.genres[d.index])))
+          if ((vis.selectedActor === null ? true :
+                                           vis.selectedActor.genres.map(g => g.genre).includes(vis.genres[d.index])) &&
+              (vis.selectedGenre === null ? true :
+                                            vis.selectedGenre === vis.genres[d.index]))
             return vis.fullOpacity;
           else
             return vis.fadeOpacity;
