@@ -7,3 +7,7 @@
   display: table;
   clear: both;
 }
+
+text {
+  font-family: Georgia, Times, "Times New Roman", serif;
+}

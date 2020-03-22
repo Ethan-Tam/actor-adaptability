@@ -7,7 +7,9 @@
 <body>
     <div id="vis" class="row">
         <div class="column">
-            <svg id="chord-diagram" width="800" height="800"></svg>
+            <svg id="network" width="800" height="800">
+                <text id="loading-text" x="400" y="400" font-weight="bold">Loading...</text>
+            </svg>
         </div>
         <div class="column">
             <div><svg id="pyramid-chart" width="400" height="400"></svg></div>
@@ -17,7 +19,7 @@
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="js/classes/barchart.js"></script>
-    <script src="js/classes/chordDiagram.js"></script>
+    <script src="js/classes/network.js"></script>
     <script src="js/classes/matrix.js"></script>
     <script src="js/process_data.js"></script>
     <script src="js/index.js"></script>
