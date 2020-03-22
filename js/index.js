@@ -9,6 +9,7 @@ let genreToActor;
 let network;
 let matrix;
 
+let selectColour = "hotpink";
 let numGenres = 7;
 let genres;
 
@@ -69,6 +70,7 @@ const initializeNetwork = data => {
   network.hovered = null;
   network.select = select;
   network.selected = null;
+  network.selectColour = selectColour;
 
   network.initVis();
 };

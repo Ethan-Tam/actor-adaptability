@@ -65,8 +65,6 @@ class Network {
     vis.fullOpacity = 1;
     vis.fadeOpacity = 0.3;
 
-    vis.selectColour = "chartreuse";
-
     vis.outerRadius = 220;
     vis.innerRadius = vis.outerRadius - 15;
 
