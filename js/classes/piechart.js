@@ -31,7 +31,8 @@ class PieChart {
       .append('g')
       .attr(
         'transform',
-        `translate(${vis.config.containerWidth / 2},${vis.config.containerHeight / 2})`,
+        `translate(${vis.config.containerWidth / 2},${vis.config
+          .containerHeight / 2})`,
       );
     vis.render();
   }
@@ -53,7 +54,17 @@ class PieChart {
         .selectAll('path')
         .data(data)
         .join('path')
-        .attr('d', segments);
+        .attr('d', segments)
+        .attr('fill', d => vis.colourScale[d.data.genre]);
+      vis.labels = vis.chart
+        .selectAll('text')
+        .data(data)
+        .join('text')
+        .text(vis.selected.actor)
+        .attr(
+          'transform',
+          `translate(${-vis.selected.actor.length * 4},${-130})`,
+        );
     }
   }
 }
