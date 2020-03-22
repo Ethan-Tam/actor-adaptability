@@ -108,61 +108,6 @@ class Network {
       vis.genrePos[g] = { x: x, y: y };
     });
 
-    // Create the links
-    vis.links = [];
-    vis.actorToLinks = {};
-    vis.nodes.forEach(n => {
-      let links = [];
-      n.genres.forEach(g => {
-        links.push({ actor: n.actor, genre: g.genre, thickness: vis.thicknessScale(g.count),
-          source: { x: 0, y: 0 }, target: vis.genrePos[g.genre] });
-      });
-      vis.actorToLinks[n.actor] = d3.range(links.length).map(l => l + vis.links.length);
-      vis.links.push(...links);
-    });
-    // Create network simulation
-    vis.sim = d3.forceSimulation(vis.nodes)
-        // Make them not collide with each other
-        .force('collide', d3.forceCollide().radius(d => vis.radiusScale(vis.getNumMovies(d))).strength(1))
-        // Make force towards centre
-        .force('x', d3.forceX().x(d => {
-          let radius =d.genres.length > 1 ? 0.96 * vis.innerRadius : 1.5 * vis.innerRadius;
-          let points = d.genres.map(g => g.count * vis.getXFromAngle(vis.chord.groups[vis.genreMap[g.genre]],
-                                                                     radius));
-          let sum = points.reduce((acc, cv) => acc + cv, 0);
-          let count = d.genres.reduce((acc, cv) => acc + cv.count, 0);
-          return sum / count;
-        }))
-        .force('y', d3.forceY().y(d => {
-          let radius =d.genres.length > 1 ? 0.96 * vis.innerRadius : 1.5 * vis.innerRadius;
-          let points = d.genres.map(g => g.count * vis.getYFromAngle(vis.chord.groups[vis.genreMap[g.genre]],
-                                                                     radius));
-          let sum = points.reduce((acc, cv) => acc + cv, 0);
-          let count = d.genres.reduce((acc, cv) => acc + cv.count, 0);
-          return sum / count;
-        }))
-        // On tick update nodes and edges
-        .on('tick', () => {
-          vis.nodeCircles
-              .attr('cx', d => {
-                vis.actorToLinks[d.actor].forEach(l => {
-                  vis.links[l].source.x = d.x;
-                });
-                return d.x;
-              })
-              .attr('cy', d => {
-                vis.actorToLinks[d.actor].forEach(l => {
-                  vis.links[l].source.y = d.y;
-                });
-                return d.y;
-              });
-          vis.renderLines();
-          vis.render();
-        });
-
-    // Reader does not have to see node movement, fast forward 300 ticks
-    vis.sim.tick(300);
-
     // Remove loading text
     d3.select("#loading-text").remove();
 
@@ -204,8 +149,8 @@ class Network {
           .data(vis.nodes, d => d.actor)
         .join('circle')
           .attr('class', 'node')
-          .attr('cx', d => d.x)
-          .attr('cy', d => d.y)
+          .attr('cx', d => d.pos.x)
+          .attr('cy', d => d.pos.y)
           .attr('r', d => vis.radiusScale(vis.getNumMovies(d)))
           .attr('fill', d => {
 
@@ -237,11 +182,33 @@ class Network {
             vis.tg.attr("opacity", 0);
             vis.tg.lower();
           });
+
+    // Draw links
+    vis.linkLines = vis.chart
+        .selectAll(".link")
+        .data(vis.links)
+      .join("path")
+        .attr('class', 'link')
+        .attr('stroke-width', d => d.thickness)
+        .attr('stroke', 'lightgrey')
+        .attr('fill', 'none')
+        .attr("opacity", 0)
+        .attr('d', (d, i) => {
+          let line = 'M' + (d.source.x + vis.centreX) + ' ' + (d.source.y + vis.centreY)
+              + ' L' + (d.target.x + vis.centreX) + ' ' + (d.target.y + vis.centreY);
+          return line;
+        });
+
+    d3.selectAll(".link").lower();
+    d3.selectAll("#background").lower();
+
+    vis.tg.raise();
   }
 
   render() {
     let vis = this;
 
+    // Show lines on select
     vis.linkLines
       .transition(100)
         .attr("opacity", d => {
@@ -289,30 +256,6 @@ class Network {
           else
             return vis.fadeOpacity;
         });
-
-    vis.tg.raise();
-  }
-
-  renderLines() {
-    let vis = this;
-
-    // Draw links
-    vis.linkLines = vis.chart
-        .selectAll(".link")
-        .data(vis.links)
-      .join("path")
-        .attr('class', 'link')
-        .attr('stroke-width', d => d.thickness)
-        .attr('stroke', 'lightgrey')
-        .attr('fill', 'none')
-        .attr('d', (d, i) => {
-          let line = 'M' + (d.source.x + vis.centreX) + ' ' + (d.source.y + vis.centreY)
-              + ' L' + (d.target.x + vis.centreX) + ' ' + (d.target.y + vis.centreY);
-          return line;
-        });
-
-    d3.selectAll(".link").lower();
-    d3.selectAll("#background").lower();
   }
 
   getXFromAngle(g, radius) {
@@ -329,8 +272,8 @@ class Network {
     vis.tt.text(d.actor);
 
     let innerWidth = vis.tt.node().getBBox().width;
-    let x = Math.min(vis.width - innerWidth - 12, vis.centreX + d.x)
-    vis.tg.attr('transform', `translate(${x},${vis.centreY + d.y - 24})`);
+    let x = Math.min(vis.width - innerWidth - 12, vis.centreX + d.pos.x)
+    vis.tg.attr('transform', `translate(${x},${vis.centreY + d.pos.y - 24})`);
 
     vis.tb.attr('width', Math.ceil(innerWidth) + 6);
     vis.tr.attr('width', Math.ceil(innerWidth) + 4);

@@ -5,6 +5,7 @@ let movieData;
 let actorToActor;
 let actorToGenre;
 let genreToActor;
+let actorLinks;
 
 let network;
 let matrix;
@@ -71,6 +72,7 @@ const initializeNetwork = data => {
   network.select = select;
   network.selected = null;
   network.selectColour = selectColour;
+  network.links = actorLinks;
 
   network.initVis();
 };
@@ -79,12 +81,14 @@ Promise.all([
   d3.csv('data/movie-data.csv'),
   d3.json('data/actor-to-actors.json'),
   d3.json('data/actor-to-genres.json'),
-  d3.json('data/genre-to-actors.json')
+  d3.json('data/genre-to-actors.json'),
+  d3.json('data/actor-links.json')
 ]).then(files => {
   moveData = files[0];
   actorToActor = files[1];
   actorToGenre = files[2];
   genreToActor = files[3];
+  actorLinks = files[4];
 
   // Create colour scale
   colourScale = d3.scaleOrdinal(d3.schemeTableau10)
