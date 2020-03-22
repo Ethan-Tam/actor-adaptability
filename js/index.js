@@ -8,6 +8,7 @@ let genreToActor;
 let actorLinks;
 
 let network;
+let piechart;
 
 let selectColour = "hotpink";
 let numGenres = 7;
@@ -28,7 +29,9 @@ const select = s => {
   }
   selected = s === selected ? null : s;
   network.selected = selected;
+  piechart.selected = selected;
   network.render();
+  piechart.render();
 };
 
 const countDuplicates = (l1, l2) => {
@@ -76,6 +79,18 @@ const initializeNetwork = data => {
   network.initVis();
 };
 
+const initializePieChart = data => {
+  piechart = new PieChart({
+    parentElement: '#pie-chart',
+    containerWidth: 400,
+    containerHeight: 400,
+  });
+
+  network.colourScale = colourScale;
+  network.genres = genres;
+  piechart.initVis();
+}
+
 Promise.all([
   d3.csv('data/movie-data.csv'),
   d3.json('data/actor-to-actors.json'),
@@ -112,4 +127,5 @@ Promise.all([
   });
 
   initializeNetwork(files[3]);
+  initializePieChart(files[2]);
 });
