@@ -260,6 +260,14 @@ class Network {
           else
             return vis.fadeOpacity;
         });
+
+    vis.labels
+        .attr("fill", d => {
+          if (vis.hovered === vis.genres[d.index])
+            return vis.selectColour;
+          else
+            return vis.colourScale(vis.genres[d.index]);
+        })
   }
 
   getXFromAngle(g, radius) {
