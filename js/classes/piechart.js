@@ -34,31 +34,32 @@ class PieChart {
         `translate(${vis.config.containerWidth / 2},${vis.config
           .containerHeight / 2})`,
       );
-    vis.render();
+    vis.update();
   }
 
-  render() {
+  update() {
     let vis = this;
-    let data;
     if (vis.selected == null) {
-      data = d3
+      vis.data = d3
         .pie()
-        .sort(null)
-        .value(d => d.actors.length)(vis.initialData);
+        .value(d => d.actors.length)
+        .sort(null)(vis.initialData);
       vis.labels = vis.chart
         .selectAll('text')
-        .data(data)
+        .data(vis.data)
         .join('text')
         .text('All Actors')
         .attr('transform', `translate(${-32},${-130})`);
     } else {
-      data = d3
+      vis.data = d3
         .pie()
-        .sort(null)
-        .value(d => d.count)(vis.selected.genres);
+        .value(d => d.count)
+        .sort((a, b) => vis.genreMap[a.genre] - vis.genreMap[b.genre])(
+        vis.selected.genres,
+      );
       vis.labels = vis.chart
         .selectAll('text')
-        .data(data)
+        .data(vis.data)
         .join('text')
         .text(vis.selected.actor)
         .attr(
@@ -66,13 +67,18 @@ class PieChart {
           `translate(${-vis.selected.actor.length * 4},${-130})`,
         );
     }
+    vis.render();
+  }
+
+  render() {
+    let vis = this;
     let segments = d3
       .arc()
       .innerRadius(0)
       .outerRadius(100);
     vis.chart
       .selectAll('path')
-      .data(data)
+      .data(vis.data)
       .join('path')
       .attr('d', segments)
       .attr('fill', d => vis.colourScale(d.data.genre));

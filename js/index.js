@@ -14,6 +14,9 @@ let selectColour = 'hotpink';
 let numGenres = 7;
 let genres;
 
+const fullOpacity = 1;
+const fadeOpacity = 0.3;
+
 let colourScale;
 
 let hovered = null;
@@ -29,16 +32,14 @@ const select = s => {
     selectedActor = null;
     selectedGenre = null;
   } else {
-    if (genres.includes(s))
-      selectedGenre = s === selectedGenre ? null : s;
-    else
-      selectedActor = s === selectedActor ? null : s;
+    if (genres.includes(s)) selectedGenre = s === selectedGenre ? null : s;
+    else selectedActor = s === selectedActor ? null : s;
   }
   network.selectedActor = selectedActor;
   network.selectedGenre = selectedGenre;
   piechart.selected = selectedActor;
   network.render();
-  piechart.render();
+  piechart.update();
 };
 
 const countDuplicates = (l1, l2) => {
@@ -71,6 +72,7 @@ const initializeNetwork = data => {
 
   network.colourScale = colourScale;
   network.genres = genres;
+  network.genreMap = genreMap;
   network.matrix = matrix;
   network.nodes = actorToGenre;
   network.hover = hover;
@@ -80,6 +82,8 @@ const initializeNetwork = data => {
   network.selectedGenre = null;
   network.selectColour = selectColour;
   network.links = actorLinks;
+  network.fullOpacity = fullOpacity;
+  network.fadeOpacity = fadeOpacity;
 
   network.initVis();
 };
@@ -93,6 +97,9 @@ const initializePieChart = data => {
   piechart.initialData = data;
   piechart.colourScale = colourScale;
   piechart.genres = genres;
+  piechart.genreMap = genreMap;
+  piechart.fullOpacity = fullOpacity;
+  piechart.fadeOpacity = fadeOpacity;
   piechart.initVis();
 };
 
@@ -125,6 +132,12 @@ Promise.all([
       .reduce((acc, cv) => acc + cv.count, 0);
     d.genres = d.genres.filter(g => genres.includes(g.genre));
     if (otherCount > 0) d.genres.push({ genre: 'Other', count: otherCount });
+  });
+
+  // Create genre index map
+  genreMap = {};
+  genres.forEach((g, i) => {
+    genreMap[g] = i;
   });
 
   // Create colour scale

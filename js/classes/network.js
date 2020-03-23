@@ -19,9 +19,6 @@ class Network {
     vis.centreX = vis.width / 2;
     vis.centreY = vis.height / 2;
 
-    vis.fullOpacity = 1;
-    vis.fadeOpacity = 0.3;
-
     vis.outerRadius = 220;
     vis.innerRadius = vis.outerRadius - 15;
 
@@ -86,12 +83,6 @@ class Network {
     vis.nodeCircles = vis.chart.selectAll('.node');
     vis.linkLines = vis.chart.selectAll('.link');
 
-    // Create genre index map
-    vis.genreMap = {};
-    vis.genres.forEach((g, i) => {
-      vis.genreMap[g] = i;
-    });
-
     // Create chord
     vis.chord = d3.chord()
         .padAngle(0.05)
@@ -152,15 +143,15 @@ class Network {
           .attr('cy', d => d.pos.y)
           .attr('r', d => vis.radiusScale(vis.getNumMovies(d)))
           .attr('fill', d => {
-
             if (d.genres.length > 1) {
-              d.genres.sort((a, b) => {
+              let sortedGenres = [...d.genres];
+              sortedGenres.sort((a, b) => {
                 return b.count - a.count;
               });
-              if (d.genres[0].count === d.genres[1].count)
+              if (sortedGenres[0].count === sortedGenres[1].count)
                 d.unhoveredColour = "grey";
               else
-                d.unhoveredColour = vis.colourScale(d.genres[0].genre);
+                d.unhoveredColour = vis.colourScale(sortedGenres[0].genre);
             } else
               d.unhoveredColour = vis.colourScale(d.genres[0].genre);
             return d.unhoveredColour;
