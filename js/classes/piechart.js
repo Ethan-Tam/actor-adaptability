@@ -44,12 +44,7 @@ class PieChart {
         .pie()
         .value(d => d.actors.length)
         .sort(null)(vis.initialData);
-      vis.labels = vis.chart
-        .selectAll('text')
-        .data(vis.data)
-        .join('text')
-        .text('All Actors')
-        .attr('transform', `translate(${-32},${-130})`);
+      vis.title = 'All Actors';
     } else {
       vis.data = d3
         .pie()
@@ -57,15 +52,7 @@ class PieChart {
         .sort((a, b) => vis.genreMap[a.genre] - vis.genreMap[b.genre])(
         vis.selected.genres,
       );
-      vis.labels = vis.chart
-        .selectAll('text')
-        .data(vis.data)
-        .join('text')
-        .text(vis.selected.actor)
-        .attr(
-          'transform',
-          `translate(${-vis.selected.actor.length * 4},${-130})`,
-        );
+      vis.title = vis.selected.actor;
     }
     vis.render();
   }
@@ -76,6 +63,18 @@ class PieChart {
       .arc()
       .innerRadius(0)
       .outerRadius(100);
+
+    // Adds title to piechart
+    vis.chart
+      .selectAll('text')
+      .data(vis.data)
+      .join('text')
+      .text(vis.title)
+      .attr(
+        'transform',
+        `translate(${-vis.title.length * 4},${-130})`,
+      );
+
     vis.chart
       .selectAll('path')
       .data(vis.data)

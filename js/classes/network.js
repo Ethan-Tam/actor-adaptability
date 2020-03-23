@@ -40,7 +40,7 @@ class Network {
         .attr("y", 0)
         .attr("width", vis.width)
         .attr("height", vis.height)
-        .on("click", d => vis.select(null));
+        .on("click", () => vis.select(null));
 
     // Set up tooltip
     vis.tg = vis.chart.append("g");
@@ -145,9 +145,7 @@ class Network {
           .attr('fill', d => {
             if (d.genres.length > 1) {
               let sortedGenres = [...d.genres];
-              sortedGenres.sort((a, b) => {
-                return b.count - a.count;
-              });
+              sortedGenres.sort((a, b) => b.count - a.count);
               if (sortedGenres[0].count === sortedGenres[1].count)
                 d.unhoveredColour = "grey";
               else
@@ -167,7 +165,7 @@ class Network {
             vis.tg.attr("opacity", 1);
             vis.tg.raise();
           })
-          .on("mouseout", d => {
+          .on("mouseout", () => {
             vis.hover(null)
             vis.tg.attr("opacity", 0);
             vis.tg.lower();
@@ -204,9 +202,9 @@ class Network {
       .transition(100)
         .attr("opacity", d => {
           if ((vis.selectedActor === null ? true :
-                                            vis.selectedActor.actor === d.actor) &&
+              vis.selectedActor.actor === d.actor) &&
               (vis.selectedGenre === null ? true :
-                                            vis.selectedGenre === d.genre) &&
+              vis.selectedGenre === d.genre) &&
               (vis.selectedActor !== null || vis.selectedGenre !== null))
             return 1;
           return 0;
@@ -224,10 +222,9 @@ class Network {
       .transition(100)
         .attr("opacity", d => {
           if ((vis.selectedActor === null ? true :
-                                           vis.selectedActor === d) &&
+              vis.selectedActor === d) &&
               (vis.selectedGenre === null ? true :
-                                            d.genres.map(g => g.genre)
-                                                     .includes(vis.selectedGenre)))
+              d.genres.map(g => g.genre).includes(vis.selectedGenre)))
             return vis.fullOpacity;
           else
             return vis.fadeOpacity;
@@ -244,9 +241,9 @@ class Network {
       .transition(100)
         .attr("opacity", d => {
           if ((vis.selectedActor === null ? true :
-                                           vis.selectedActor.genres.map(g => g.genre).includes(vis.genres[d.index])) &&
+              vis.selectedActor.genres.map(g => g.genre).includes(vis.genres[d.index])) &&
               (vis.selectedGenre === null ? true :
-                                            vis.selectedGenre === vis.genres[d.index]))
+              vis.selectedGenre === vis.genres[d.index]))
             return vis.fullOpacity;
           else
             return vis.fadeOpacity;
