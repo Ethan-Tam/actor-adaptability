@@ -94,7 +94,6 @@ class PieChart {
 
     vis.slices = vis.chart.selectAll('path').data(vis.data, d => d.data.genre);
 
-    console.log("start");
     vis.slices
       .join('path')
       .attr('fill', d => vis.colourScale(d.data.genre))
@@ -118,7 +117,6 @@ class PieChart {
   arcTween(arc) {
     return d => {
       let vis = this;
-      console.log(d.startAngle);
       let interpolateStart = d3.interpolate(vis.lastAngles[d.data.genre].startAngle,
                                             d.startAngle);
       let interpolateEnd = d3.interpolate(vis.lastAngles[d.data.genre].endAngle,
