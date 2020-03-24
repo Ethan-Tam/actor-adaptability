@@ -3,6 +3,7 @@
 Data sources: https://www.kaggle.com/PromptCloudHQ/imdb-data
 
 External Code sources: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
+<<<<<<< HEAD
 
 ## Milestone 2 Write-Up
 
@@ -27,3 +28,6 @@ External Code sources: https://stackoverflow.com/questions/14964035/how-to-expor
 | Good time management                   |      |              |      |           |                                            |
 | Team acquired needed knowledge base    |      |              |      |           |                                            |
 | Efforts communicated well within group |      |              |      |           |                                            |
+=======
+                       http://bl.ocks.org/mbostock/5100636
+>>>>>>> fixed pie chart tween transitions
