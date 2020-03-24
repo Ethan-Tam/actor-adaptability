@@ -52,7 +52,7 @@ External Code sources:
     - Figure 2
       - ![](https://p83.f1.n0.cdn.getcloudapp.com/items/04uK8vQ0/Image%202020-03-24%20at%202.32.49%20PM.png?v=b99edca28791f7ec6293f2c345ea18df)
     - Figure 3
-      - 
+      - ![](https://scontent.fcxh2-1.fna.fbcdn.net/v/t1.15752-9/90441888_225077685353705_6979538906467270656_n.png?_nc_cat=104&_nc_sid=b96e70&_nc_ohc=dlolag6-tT8AX8yiq1k&_nc_ht=scontent.fcxh2-1.fna&oh=739c5853e3b67c55de82398249c03c22&oe=5E9F3015)
    - **Adjacency Matrix, Pyramid Chart, and Barchart tooltip**
      - Upon further discussion, we realize that these views were unique but did not link well with our main chord/network diagram view as there was little to no relationship between these visualizations. In addition, both these visualizations do not scale well and deciding which actors to completely filter out became a daunting task. These intended views also did not align with our task objective of connecting each actor to genres. For these reasons, we have decided to scrap these views and replace them.
    - **Pie Chart**
