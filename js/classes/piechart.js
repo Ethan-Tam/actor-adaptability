@@ -21,6 +21,16 @@ class PieChart {
   initVis() {
     let vis = this;
 
+    vis.segments = d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(100);
+
+    vis.expandedSegments = d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(100 + 10);
+
     // Create the chart
     vis.svg = d3
       .select(vis.config.parentElement)
@@ -59,27 +69,33 @@ class PieChart {
 
   render() {
     let vis = this;
-    let segments = d3
-      .arc()
-      .innerRadius(0)
-      .outerRadius(100);
 
     // Adds title to piechart
     vis.chart
       .selectAll('text')
-      .data(vis.data)
+      .data(vis.data, d => d.data.genre)
       .join('text')
       .text(vis.title)
-      .attr(
-        'transform',
-        `translate(${-vis.title.length * 4},${-130})`,
-      );
+      .attr('transform', `translate(${-vis.title.length * 4},${-130})`);
 
-    vis.chart
-      .selectAll('path')
-      .data(vis.data)
+    vis.slices = vis.chart.selectAll('path').data(vis.data, d => d.data.genre);
+
+    vis.slices
       .join('path')
-      .attr('d', segments)
-      .attr('fill', d => vis.colourScale(d.data.genre));
+      .attr('fill', d => vis.colourScale(d.data.genre))
+      .on('mouseover', d => {
+        vis.hover(d);
+      })
+      .on('mouseout', () => {
+        vis.hover(null);
+      })
+      .transition(200)
+      .attr('d', d => {
+        if (d == vis.hoveredSlice) {
+          return vis.expandedSegments(d);
+        } else {
+          return vis.segments(d);
+        }
+      });
   }
 }

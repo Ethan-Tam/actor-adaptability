@@ -20,6 +20,12 @@ const fadeOpacity = 0.3;
 let colourScale;
 
 let hovered = null;
+
+const hoverSlice = slice => {
+  piechart.hoveredSlice = slice;
+  piechart.render();
+};
+
 const hover = s => {
   network.hovered = s;
   network.render();
@@ -100,6 +106,7 @@ const initializePieChart = data => {
   piechart.genreMap = genreMap;
   piechart.fullOpacity = fullOpacity;
   piechart.fadeOpacity = fadeOpacity;
+  piechart.hover = hoverSlice;
   piechart.initVis();
 };
 
