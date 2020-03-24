@@ -2,7 +2,9 @@
 
 Data source: https://www.kaggle.com/PromptCloudHQ/imdb-data
 
-External Code sources: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side http://bl.ocks.org/mbostock/5100636
+External Code sources: 
+- https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side 
+- http://bl.ocks.org/mbostock/5100636
 
 ## Milestone 2 Write-Up
 
@@ -45,6 +47,12 @@ External Code sources: https://stackoverflow.com/questions/14964035/how-to-expor
 1. Changes in visualization goals
    - **Network Diagram**
      - After talking to TAs and Professor Munzner, our initial chord diagram visualization proved to be ineffective and confusing in acheiving our task. We originally represented each actor with a set of chords (as each individual chord signified a switch in movie genres of a given actor) which is confusing and unintuitive. The chord diagram also does not scale well to our dataset. Even after bundling and setting each movie with a single main genre, it was still extremely difficult to read (Figure 1). We ended up creating something that looked visually appealing by hiding the chords behind a band but it was hacky and still did not resolve our confusing chord mark (Figure 2). Therefore, we have decided to pivot to represent each actor with a node in a network diagram (Figure 3).
+     - Figure 1
+      - ![](https://p83.f1.n0.cdn.getcloudapp.com/items/qGuob6qw/Image%202020-03-24%20at%202.34.58%20PM.png?v=27677a7d9495ca263d48dcbc20171e1d)
+    - Figure 2
+      - ![](https://p83.f1.n0.cdn.getcloudapp.com/items/04uK8vQ0/Image%202020-03-24%20at%202.32.49%20PM.png?v=b99edca28791f7ec6293f2c345ea18df)
+    - Figure 3
+      - 
    - **Adjacency Matrix, Pyramid Chart, and Barchart tooltip**
      - Upon further discussion, we realize that these views were unique but did not link well with our main chord/network diagram view as there was little to no relationship between these visualizations. In addition, both these visualizations do not scale well and deciding which actors to completely filter out became a daunting task. These intended views also did not align with our task objective of connecting each actor to genres. For these reasons, we have decided to scrap these views and replace them.
    - **Pie Chart**
