@@ -23,6 +23,7 @@ let hovered = null;
 
 const hoverSlice = slice => {
   piechart.hoveredSlice = slice;
+  piechart.saveLastAngles();
   piechart.render();
 };
 
@@ -45,6 +46,7 @@ const select = s => {
   network.selectedGenre = selectedGenre;
   piechart.selected = selectedActor;
   network.render();
+  piechart.saveLastAngles();
   piechart.update();
 };
 

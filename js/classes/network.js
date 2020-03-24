@@ -31,37 +31,37 @@ class Network {
         .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
     // Set up background for click off events
-    vis.chart.selectAll("rect")
+    vis.chart.selectAll('rect')
         .data([null])
-      .join("rect")
-        .attr("id", "background")
-        .attr("fill", "white")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", vis.width)
-        .attr("height", vis.height)
-        .on("click", () => vis.select(null));
+      .join('rect')
+        .attr('id', 'background')
+        .attr('fill', 'white')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', vis.width)
+        .attr('height', vis.height)
+        .on('click', () => vis.select(null));
 
     // Set up tooltip
-    vis.tg = vis.chart.append("g");
-    vis.tb = vis.tg.append("rect")
-        .attr("fill", "black")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 0)
-        .attr("height", 18);
-    vis.tr = vis.tg.append("rect")
-        .attr("fill", "white")
-        .attr("x", 1)
-        .attr("y", 1)
-        .attr("width", 0)
-        .attr("height", 16);
-    vis.tt = vis.tg.append("text")
-        .attr("fill", "black")
-        .attr("x", 3)
-        .attr("y", 15)
+    vis.tg = vis.chart.append('g');
+    vis.tb = vis.tg.append('rect')
+        .attr('fill', 'black')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 0)
+        .attr('height', 18);
+    vis.tr = vis.tg.append('rect')
+        .attr('fill', 'white')
+        .attr('x', 1)
+        .attr('y', 1)
+        .attr('width', 0)
+        .attr('height', 16);
+    vis.tt = vis.tg.append('text')
+        .attr('fill', 'black')
+        .attr('x', 3)
+        .attr('y', 15)
         .attr('font-size', 14)
-        .text("");
+        .text('');
 
     // Create radius scale
     vis.getNumMovies = d => d.genres.reduce((acc, cv) => acc + cv.count, 0);
@@ -99,39 +99,39 @@ class Network {
     });
 
     // Remove loading text
-    d3.select("#loading-text").remove();
+    d3.select('#loading-text').remove();
 
     // Draw arcs
     vis.arcs = vis.chart.datum(vis.chord)
-       .selectAll("g.arc")
+       .selectAll('g.arc')
        .data(d => d.groups, d => vis.genres[d.index])
-      .join("g")
-        .attr("class", "arc")
-      .append("path")
-        .attr("id", d => "group" + d.index)
-        .attr("fill", d => vis.colourScale(vis.genres[d.index]))
-        .attr("stroke", "black")
-        .attr("d", d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
-        .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
+      .join('g')
+        .attr('class', 'arc')
+      .append('path')
+        .attr('id', d => 'group' + d.index)
+        .attr('fill', d => vis.colourScale(vis.genres[d.index]))
+        .attr('stroke', 'black')
+        .attr('d', d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
+        .attr('transform', `translate(${vis.centreX}, ${vis.centreY})`)
         .attr('opacity', vis.fullOpacity)
-        .on("click", d => vis.select(vis.genres[d.index]))
-        .on("mouseover", d => vis.hover(vis.genres[d.index]))
-        .on("mouseout", d => vis.hover(null));
+        .on('click', d => vis.select(vis.genres[d.index]))
+        .on('mouseover', d => vis.hover(vis.genres[d.index]))
+        .on('mouseout', d => vis.hover(null));
 
     // Draw arc labels
     vis.labels = vis.chart
-        .selectAll("text.arc")
+        .selectAll('text.arc')
         .data(vis.chord.groups, d => vis.genres[d.index])
-      .join("text")
-        .attr("dx", 10)
-        .attr("dy", -8)
-        .attr("class", "arc")
-      .append("textPath")
-        .attr("xlink:href", d => "#group" + d.index)
+      .join('text')
+        .attr('dx', 10)
+        .attr('dy', -8)
+        .attr('class', 'arc')
+      .append('textPath')
+        .attr('xlink:href', d => '#group' + d.index)
         .text(d => vis.genres[d.index])
-        .attr("fill", d => vis.colourScale(vis.genres[d.index]))
-        .attr("font-size", "20px")
-        .attr("font-weight", "bold")
+        .attr('fill', d => vis.colourScale(vis.genres[d.index]))
+        .attr('font-size', '20px')
+        .attr('font-weight', 'bold')
         .attr('opacity', vis.fullOpacity);
 
     // Render the nodes
@@ -147,7 +147,7 @@ class Network {
               let sortedGenres = [...d.genres];
               sortedGenres.sort((a, b) => b.count - a.count);
               if (sortedGenres[0].count === sortedGenres[1].count)
-                d.unhoveredColour = "grey";
+                d.unhoveredColour = 'grey';
               else
                 d.unhoveredColour = vis.colourScale(sortedGenres[0].genre);
             } else
@@ -157,39 +157,39 @@ class Network {
           .attr('opacity', vis.fullOpacity)
           .attr('actor', d => d.actor)
           .attr('numGenres', d => d.genres.length)
-          .attr("transform", `translate(${vis.centreX}, ${vis.centreY})`)
-          .on("click", d => vis.select(d))
-          .on("mouseover", d => {
+          .attr('transform', `translate(${vis.centreX}, ${vis.centreY})`)
+          .on('click', d => vis.select(d))
+          .on('mouseover', d => {
             vis.hover(d);
             vis.updateTooltip(d);
-            vis.tg.attr("opacity", 1);
+            vis.tg.attr('opacity', 1);
             vis.tg.raise();
           })
-          .on("mouseout", () => {
+          .on('mouseout', () => {
             vis.hover(null)
-            vis.tg.attr("opacity", 0);
+            vis.tg.attr('opacity', 0);
             vis.tg.lower();
           });
 
     // Draw links
     vis.linkLines = vis.chart
-        .selectAll(".link")
+        .selectAll('.link')
         .data(vis.links)
-      .join("path")
+      .join('path')
         .attr('class', 'link')
         .attr('stroke-width', d => d.thickness)
         .attr('stroke', 'lightgrey')
         .attr('fill', 'none')
-        .attr("opacity", 0)
+        .attr('opacity', 0)
         .attr('d', (d, i) => {
           let line = 'M' + (d.source.x + vis.centreX) + ' ' + (d.source.y + vis.centreY)
               + ' L' + (d.target.x + vis.centreX) + ' ' + (d.target.y + vis.centreY);
           return line;
         })
-        .on("click", d => vis.select(null));;
+        .on('click', d => vis.select(null));;
 
-    d3.selectAll(".link").lower();
-    d3.selectAll("#background").lower();
+    d3.selectAll('.link').lower();
+    d3.selectAll('#background').lower();
 
     vis.tg.raise();
   }
@@ -200,7 +200,7 @@ class Network {
     // Show lines on select
     vis.linkLines
       .transition(100)
-        .attr("opacity", d => {
+        .attr('opacity', d => {
           if ((vis.selectedActor === null ? true :
               vis.selectedActor.actor === d.actor) &&
               (vis.selectedGenre === null ? true :
@@ -212,7 +212,7 @@ class Network {
 
     // Select/hover nodes
     vis.nodeCircles
-        .attr("fill", d => {
+        .attr('fill', d => {
           if (vis.hovered === d ||
               d.genres.map(g => g.genre).includes(vis.hovered))
             return vis.selectColour;
@@ -220,7 +220,7 @@ class Network {
             return d.unhoveredColour;
         })
       .transition(100)
-        .attr("opacity", d => {
+        .attr('opacity', d => {
           if ((vis.selectedActor === null ? true :
               vis.selectedActor === d) &&
               (vis.selectedGenre === null ? true :
@@ -232,14 +232,14 @@ class Network {
 
     // Select/hover arcs
     vis.arcs
-        .attr("fill", d => {
+        .attr('fill', d => {
           if (vis.hovered === vis.genres[d.index])
             return vis.selectColour;
           else
             return vis.colourScale(vis.genres[d.index]);
         })
       .transition(100)
-        .attr("opacity", d => {
+        .attr('opacity', d => {
           if ((vis.selectedActor === null ? true :
               vis.selectedActor.genres.map(g => g.genre).includes(vis.genres[d.index])) &&
               (vis.selectedGenre === null ? true :
@@ -250,7 +250,7 @@ class Network {
         });
 
     vis.labels
-        .attr("fill", d => {
+        .attr('fill', d => {
           if (vis.hovered === vis.genres[d.index])
             return vis.selectColour;
           else

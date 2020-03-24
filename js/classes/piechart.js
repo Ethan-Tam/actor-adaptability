@@ -44,6 +44,13 @@ class PieChart {
         `translate(${vis.config.containerWidth / 2},${vis.config
           .containerHeight / 2})`,
       );
+
+    // Initialize previous angles all to zero
+    vis.lastAngles = {};
+    vis.genres.forEach(d => {
+      vis.lastAngles[d] = { startAngle: 0,
+                            endAngle: 0 };
+    });
     vis.update();
   }
 
@@ -56,11 +63,18 @@ class PieChart {
         .sort(null)(vis.initialData);
       vis.title = 'All Actors';
     } else {
+      // Add all the unincluded genres with count zero
+      let genreData = [...vis.selected.genres];
+      genreData.push(...vis.genres.filter(d => {
+        return !vis.selected.genres.map(g => g.genre).includes(d);
+      }).map(d => {
+        return { genre: d, count: 0 };
+      }));
       vis.data = d3
         .pie()
         .value(d => d.count)
         .sort((a, b) => vis.genreMap[a.genre] - vis.genreMap[b.genre])(
-        vis.selected.genres,
+        genreData
       );
       vis.title = vis.selected.actor;
     }
@@ -80,6 +94,7 @@ class PieChart {
 
     vis.slices = vis.chart.selectAll('path').data(vis.data, d => d.data.genre);
 
+    console.log("start");
     vis.slices
       .join('path')
       .attr('fill', d => vis.colourScale(d.data.genre))
@@ -89,13 +104,39 @@ class PieChart {
       .on('mouseout', () => {
         vis.hover(null);
       })
-      .transition(200)
-      .attr('d', d => {
+      .transition(100)
+      .attrTween('d', d => {
         if (d == vis.hoveredSlice) {
-          return vis.expandedSegments(d);
+          return vis.arcTween(vis.expandedSegments)(d);
         } else {
-          return vis.segments(d);
+          return vis.arcTween(vis.segments)(d);
         }
       });
+  }
+
+  // Need to tween since built in interpolation does not work here
+  arcTween(arc) {
+    return d => {
+      let vis = this;
+      console.log(d.startAngle);
+      let interpolateStart = d3.interpolate(vis.lastAngles[d.data.genre].startAngle,
+                                            d.startAngle);
+      let interpolateEnd = d3.interpolate(vis.lastAngles[d.data.genre].endAngle,
+                                          d.endAngle);
+      return t => {
+        d.startAngle = interpolateStart(t);
+        d.endAngle = interpolateEnd(t);
+        return arc(d);
+      };
+    };
+  }
+
+  // Store the previous angles for smooth transitions
+  saveLastAngles() {
+    let vis = this;
+    vis.data.forEach(d => {
+      vis.lastAngles[d.data.genre] = { startAngle: d.startAngle,
+                                       endAngle: d.endAngle };
+    });
   }
 }
