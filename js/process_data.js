@@ -3,17 +3,28 @@ const processData = () => {
   let genreToActors = {};
   let actorToGenres = {};
   let actorToActor = {};
+  let actorToYearGenre = {};
+  // initialize actorToYearGenre with "all" object
+  actorToYearGenre["all"] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
+                                  {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
 
   d3.csv('data/movie-data.csv').then(data => {
     // Parse data into separate dicts
     data.forEach(d => {
+      // Get d's "main" genre
+      g = d['Genre'].split(',')[0]
+      // Deal with actorToYearGenre array for "all"
+      if (actorToYearGenre["all"][+d['Year']-2006].hasOwnProperty(g)) {
+          actorToYearGenre["all"][+d['Year']-2006][g]++;
+        } else {
+          actorToYearGenre["all"][+d['Year']-2006][g] = 1;
+        }
       // Everything has to do with actors, so make them the outer loop
       d['Actors'].split(',').forEach(a => {
         // Trim the name to remove spaces before and after
         let name = a.trim();
 
         // Handle the genre to actor dict
-        g = d['Genre'].split(',')[0]
         if (!(g in genreToActors)) {
           genreToActors[g] = [];
         }
@@ -54,6 +65,17 @@ const processData = () => {
               actorToActor[name].push({name: otherName, count: 1});
           }
         });
+
+        // Handle the actor to genre-year dict
+        if (!(name in actorToYearGenre)) {
+          actorToYearGenre[name] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
+                                  {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
+        }
+        if (actorToYearGenre[name][+d['Year']-2006].hasOwnProperty(g)) {
+          actorToYearGenre[name][+d['Year']-2006][g]++;
+        } else {
+          actorToYearGenre[name][+d['Year']-2006][g] = 1;
+        }
       });
     });
 
@@ -90,8 +112,9 @@ const processData = () => {
     });
 
     // Log the strings so they can be pasted into CSV files
-    console.log(JSON.stringify(gToARows));
-    console.log(JSON.stringify(aToGRows));
-    console.log(JSON.stringify(aToARows));
+    // console.log(JSON.stringify(gToARows));
+    // console.log(JSON.stringify(aToGRows));
+    // console.log(JSON.stringify(aToARows));
+    console.log(actorToYearGenre);
   });
 }
