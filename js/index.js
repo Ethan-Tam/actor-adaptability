@@ -87,8 +87,13 @@ const select = s => {
     selectedActor = null;
     selectedGenre = null;
   } else {
-    if (genres.includes(s)) selectedGenre = s === selectedGenre ? null : s;
-    else selectedActor = s === selectedActor ? null : s;
+    if (genres.includes(s)) {
+      selectedGenre = s === selectedGenre ? null : s;
+      selectedActor = null;
+    } else {
+      selectedActor = s === selectedActor ? null : s;
+      selectedGenre = null;
+    }
   }
   network.selectedActor = selectedActor;
   network.selectedGenre = selectedGenre;
