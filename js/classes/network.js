@@ -233,7 +233,7 @@ class Network {
             return vis.fullOpacity;
           else
             return vis.fadeOpacity;
-        });;
+        });
 
     // Select/hover arcs
     vis.arcs
@@ -255,12 +255,12 @@ class Network {
         });
 
     vis.labels
-        .attr('fill', d => {
+        .attr('stroke-width', d => {
           if (vis.hovered === vis.genres[d.index])
-            return vis.selectColour;
+            return vis.selectStrokeWidth;
           else
-            return vis.colourScale(vis.genres[d.index]);
-        })
+            return 0;
+        });
   }
 
   getXFromAngle(g, radius) {
