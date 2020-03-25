@@ -114,8 +114,6 @@ class Network {
         .attr('d', d3.arc().innerRadius(vis.innerRadius).outerRadius(vis.outerRadius))
         .attr('transform', `translate(${vis.centreX}, ${vis.centreY})`)
         .attr('opacity', vis.fullOpacity)
-        .attr('stroke', 'black')
-        .attr('stroke-width', 0)
         .on('click', d => vis.select(vis.genres[d.index]))
         .on('mouseover', d => vis.hover(vis.genres[d.index]))
         .on('mouseout', d => vis.hover(null));
@@ -134,8 +132,6 @@ class Network {
         .attr('fill', d => vis.colourScale(vis.genres[d.index]))
         .attr('font-size', '20px')
         .attr('font-weight', 'bold')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 0)
         .attr('opacity', vis.fullOpacity);
 
     // Render the nodes
@@ -160,8 +156,6 @@ class Network {
           })
           .attr('opacity', vis.fullOpacity)
           .attr('actor', d => d.actor)
-          .attr('stroke', 'black')
-          .attr('stroke-width', 0)
           .attr('numGenres', d => d.genres.length)
           .attr('transform', `translate(${vis.centreX}, ${vis.centreY})`)
           .on('click', d => vis.select(d))
@@ -181,16 +175,17 @@ class Network {
     vis.linkLines = vis.chart
         .selectAll('.link')
         .data(vis.links)
-      .join('line')
+      .join('path')
         .attr('class', 'link')
         .attr('stroke-width', d => d.thickness)
         .attr('stroke', 'lightgrey')
         .attr('fill', 'none')
         .attr('opacity', 0)
-        .attr('x1', d => (d.source.x + vis.centreX))
-        .attr('y1', d => (d.source.y + vis.centreY))
-        .attr('x2', d => (d.target.x + vis.centreX))
-        .attr('y2', d => (d.target.y + vis.centreY))
+        .attr('d', (d, i) => {
+          let line = 'M' + (d.source.x + vis.centreX) + ' ' + (d.source.y + vis.centreY)
+              + ' L' + (d.target.x + vis.centreX) + ' ' + (d.target.y + vis.centreY);
+          return line;
+        })
         .on('click', d => vis.select(null));;
 
     d3.selectAll('.link').lower();
@@ -217,12 +212,12 @@ class Network {
 
     // Select/hover nodes
     vis.nodeCircles
-        .attr('stroke-width', d => {
+        .attr('fill', d => {
           if (vis.hovered === d ||
               d.genres.map(g => g.genre).includes(vis.hovered))
-            return vis.selectStrokeWidth;
+            return vis.selectColour;
           else
-            return 0;
+            return d.unhoveredColour;
         })
       .transition(100)
         .attr('opacity', d => {
@@ -237,11 +232,11 @@ class Network {
 
     // Select/hover arcs
     vis.arcs
-        .attr('stroke-width', d => {
+        .attr('fill', d => {
           if (vis.hovered === vis.genres[d.index])
-            return vis.selectStrokeWidth;
+            return vis.selectColour;
           else
-            return 0;
+            return vis.colourScale(vis.genres[d.index]);
         })
       .transition(100)
         .attr('opacity', d => {
