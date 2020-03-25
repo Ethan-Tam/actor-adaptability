@@ -11,7 +11,7 @@ let actorYearGenres;
 let network;
 let piechart;
 
-let selectColour = "#00fa9a";
+let selectStrokeWidth = 1;
 let numGenres = 7;
 let genres;
 
@@ -87,8 +87,13 @@ const select = s => {
     selectedActor = null;
     selectedGenre = null;
   } else {
-    if (genres.includes(s)) selectedGenre = s === selectedGenre ? null : s;
-    else selectedActor = s === selectedActor ? null : s;
+    if (genres.includes(s)) {
+      selectedGenre = s === selectedGenre ? null : s;
+      selectedActor = null;
+    } else {
+      selectedActor = s === selectedActor ? null : s;
+      selectedGenre = null;
+    }
   }
   network.selectedActor = selectedActor;
   network.selectedGenre = selectedGenre;
@@ -136,7 +141,6 @@ const initializeNetwork = data => {
   network.select = select;
   network.selectedActor = null;
   network.selectedGenre = null;
-  network.selectColour = selectColour;
   network.links = actorLinks;
   network.fullOpacity = fullOpacity;
   network.fadeOpacity = fadeOpacity;
