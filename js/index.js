@@ -11,7 +11,7 @@ let actorYearGenres;
 let network;
 let piechart;
 
-let selectStrokeWidth = 1;
+let selectColour = "#00fa9a";
 let numGenres = 7;
 let genres;
 
@@ -136,6 +136,7 @@ const initializeNetwork = data => {
   network.select = select;
   network.selectedActor = null;
   network.selectedGenre = null;
+  network.selectColour = selectColour;
   network.links = actorLinks;
   network.fullOpacity = fullOpacity;
   network.fadeOpacity = fadeOpacity;
