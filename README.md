@@ -5,6 +5,7 @@ Data source: https://www.kaggle.com/PromptCloudHQ/imdb-data
 External Code sources: 
 - https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side 
 - http://bl.ocks.org/mbostock/5100636
+- https://observablehq.com/@ericd9799/learning-stacked-bar-chart-in-d3-js
 
 ## Milestone 2 Write-Up
 
