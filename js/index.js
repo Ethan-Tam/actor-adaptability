@@ -83,6 +83,7 @@ const hover = s => {
 
 let selectedActor = null;
 let selectedGenre = null;
+
 const select = s => {
   if (s === null) {
     selectedActor = null;
@@ -204,8 +205,7 @@ const initializeBarchart = data => {
   });
 
   // fill in the counts for each genre entity
-  data["all"].forEach((yearObj) => {
-      index = yearObj["year"] - 2006
+  data["all"].forEach((yearObj, index) => {
     Object.entries(yearObj).forEach(([genre, count]) => {
       if (genre !== "year") {
         // fill in genre with its count
