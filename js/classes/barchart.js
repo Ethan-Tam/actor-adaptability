@@ -38,6 +38,37 @@ class stackedBarChart {
     // Initialize vis.series to "all"
     vis.series = vis.getSeriesFromData(vis.data["all"]);
 
+    // calculate vis.yScale from vis.series
+    vis.yScale = d3.scaleLinear()
+      .domain([0, d3.max(vis.series, d => d3.max(d, d => d[1]))])
+      .range([vis.height, 0]);
+
+    // Add x-axis
+    vis.xAxisG = vis.chart.append("g")
+      .attr("id", "xAxis")
+      .attr("transform", `translate(0,${vis.height})`)
+      .call(vis.xAxis);
+
+    // Filter to only include integers in axis ticks
+    vis.yAxisTicks = vis.yScale.ticks()
+      .filter(tick => Number.isInteger(tick));
+
+    // Apply filter to only include integer axis ticks and format
+    vis.yAxis = d3.axisLeft(vis.yScale)
+      .tickValues(vis.yAxisTicks)
+      .tickFormat(d3.format('d'));
+
+    // Add y-axis
+    vis.yAxisG = vis.chart.append("g")
+      .attr("id", "yAxis");
+
+    // Add chart title
+    vis.title = d3.select(vis.config.parentElement).append('text')
+      .attr("x", vis.config.margin.left + (vis.width / 2))
+      .attr("y", vis.config.margin.top - 10)
+      .attr("text-anchor", "middle")
+      .text("Movies counts per year and their genres");
+
     vis.render();
   }
 
@@ -77,21 +108,35 @@ class stackedBarChart {
     // Update vis.series
     vis.series = vis.getSeriesFromData(selectedData)
 
+    // calculate vis.yScale from vis.series
+    vis.yScale = d3.scaleLinear()
+      .domain([0, d3.max(vis.series, d => d3.max(d, d => d[1]))])
+      .range([vis.height, 0]);
+
+    // Filter to only include integers in axis ticks
+    vis.yAxisTicks = vis.yScale.ticks()
+      .filter(tick => Number.isInteger(tick));
+
+    // Apply filter to only include integer axis ticks and format
+    vis.yAxis = d3.axisLeft(vis.yScale)
+      .tickValues(vis.yAxisTicks)
+      .tickFormat(d3.format('d'));
+
     vis.render();
   }
 
   render() {
     let vis = this;
 
-    // calculate vis.yScale from vis.series
-    vis.yScale = d3.scaleLinear()
-      .domain([0, d3.max(vis.series, d => d3.max(d, d => d[1]))])
-      .range([vis.height, 0]);
+    vis.yAxisG
+      .transition(100)
+      .call(vis.yAxis);
 
     // assign colours and render bars
-    vis.chart.selectAll("g")
+    vis.chart.selectAll("g.bar")
       .data(vis.series)
       .join("g")
+        .attr("class", "bar")
         .attr("fill", d => vis.colourScale(d.key))
       .selectAll("rect")
       .data(d => d)
@@ -101,34 +146,6 @@ class stackedBarChart {
         .transition(100)
           .attr("y", d => vis.yScale(d[1]))
           .attr("height", d => vis.yScale(d[0]) - vis.yScale(d[1]))
-
-    // Add x-axis
-    vis.xAxisG = vis.chart.append("g")
-      .attr("id", "xAxis")
-      .attr("transform", `translate(0,${vis.height})`)
-      .call(vis.xAxis);
-
-    // Filter to only include integers in axis ticks 
-    vis.yAxisTicks = vis.yScale.ticks()
-      .filter(tick => Number.isInteger(tick));
-
-    // Apply filter to only include integer axis ticks and format
-    vis.yAxis = d3.axisLeft(vis.yScale)
-      .tickValues(vis.yAxisTicks)
-      .tickFormat(d3.format('d'));
-
-    // Add y-axis
-    vis.yAxisG = vis.chart.append("g")
-      .attr("id", "yAxis")
-      .transition(100)
-        .call(vis.yAxis);
-
-    // Add chart title
-    vis.title = d3.select(vis.config.parentElement).append('text')
-      .attr("x", vis.config.margin.left + (vis.width / 2))             
-      .attr("y", vis.config.margin.top - 10)
-      .attr("text-anchor", "middle")
-      .text("Movies counts per year and their genres");
   }
 
   getSeriesFromData(selectedData) {
