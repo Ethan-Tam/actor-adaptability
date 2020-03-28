@@ -14,10 +14,11 @@ const processData = () => {
       // Get d's "main" genre
       g = d['Genre'].split(',')[0]
       // Deal with actorToYearGenre array for "all"
-      if (actorToYearGenre["all"][+d['Year']-2006].hasOwnProperty(g)) {
-          actorToYearGenre["all"][+d['Year']-2006][g]++;
+      let index = +d['Year']-2006
+      if (actorToYearGenre["all"][index].hasOwnProperty(g)) {
+          actorToYearGenre["all"][index][g]++;
         } else {
-          actorToYearGenre["all"][+d['Year']-2006][g] = 1;
+          actorToYearGenre["all"][index][g] = 1;
         }
       // Everything has to do with actors, so make them the outer loop
       d['Actors'].split(',').forEach(a => {
@@ -71,10 +72,10 @@ const processData = () => {
           actorToYearGenre[name] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
                                   {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
         }
-        if (actorToYearGenre[name][+d['Year']-2006].hasOwnProperty(g)) {
-          actorToYearGenre[name][+d['Year']-2006][g]++;
+        if (actorToYearGenre[name][index].hasOwnProperty(g)) {
+          actorToYearGenre[name][index][g]++;
         } else {
-          actorToYearGenre[name][+d['Year']-2006][g] = 1;
+          actorToYearGenre[name][index][g] = 1;
         }
       });
     });

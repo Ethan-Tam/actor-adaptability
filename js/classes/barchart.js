@@ -33,7 +33,7 @@ class stackedBarChart {
       .padding(0.1);
 
     // Initialize vis.series to "all"
-    vis.series = vis.getSeriesFromData("all");
+    vis.series = vis.getSeriesFromData(vis.data["all"]);
     // console.log(vis.data["Action"])
     // console.log(vis.series)
 
@@ -44,18 +44,36 @@ class stackedBarChart {
 
   update() {
     let vis = this;
-    let selected = "all"
+    let selectedData;
 
-    if (vis.selectedActor !== null)
-      selected = vis.selectedActor["actor"]
-    else if (vis.selectedGenre !== null)
-      selected = vis.selectedGenre
+    // uncomment line below to test selecting actor and genre
+    // vis.selectedGenre = "Action"
 
-    // uncomment following line for sanity check
-    // console.log(vis.data[selected])
+    if (vis.selectedActor === null && vis.selectedGenre === null) {
+      selectedData = vis.data["all"]
+    } else if (vis.selectedActor!== null && vis.selectedGenre === null) {
+      selectedData = vis.data[vis.selectedActor["actor"]]
+    } else if (vis.selectedActor === null && vis.selectedGenre !== null) {
+      selectedData = vis.data[vis.selectedGenre]
+    } else {
+      // Both genre AND actor are selected
+      // Get actor data
+      let actorData = vis.data[vis.selectedActor["actor"]]
+      // Deep clone array
+      actorData = JSON.parse(JSON.stringify(actorData))
+      // Make all genres in yearObj that are not vis.selectedGenre or "year" have 0 count
+      actorData.forEach((yearObj, idx) => {
+        Object.entries(yearObj).forEach(([genre, count]) => {
+          if (genre !== vis.selectedGenre && genre !== "year") {
+            actorData[idx][genre] = 0
+          }
+        });
+      });
+      selectedData = actorData
+    }
 
-    // change update vis.series
-    vis.series = vis.getSeriesFromData(selected)
+    // Update vis.series
+    vis.series = vis.getSeriesFromData(selectedData)
 
     vis.render();
   }
@@ -87,7 +105,7 @@ class stackedBarChart {
       .attr("transform", `translate(0,${vis.height})`)
       .call(vis.xAxis);
 
-    // Filter to to only include integers in axis ticks 
+    // Filter to only include integers in axis ticks 
     vis.yAxisTicks = vis.yScale.ticks()
       .filter(tick => Number.isInteger(tick));
 
@@ -109,8 +127,8 @@ class stackedBarChart {
       .text("Movies counts per year and their genres");
   }
 
-  getSeriesFromData(selectedEntity) {
+  getSeriesFromData(selectedData) {
     let vis = this;
-    return d3.stack().keys(vis.data["columns"])(vis.data[selectedEntity])
+    return d3.stack().keys(vis.data["columns"])(selectedData)
   }
 }
