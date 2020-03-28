@@ -29,7 +29,7 @@ External Code sources:
   **Pie Chart:**
 
     - Marks:
-      - TODO - what is the mark of a pie chart?
+      - *TODO* - what is the mark of a pie chart?
     - Channels:
       - *Angle* - the total angle of a slice in the pie chart is proportional to the percentage of movies in that specified genre over the past decade. We are aware that this encoding may not be the most effective, but we really wanted to showcase a part to whole relationship which is why we used a pie chart. To further assist the user, we plan on adding labels (but the actual quantity and the percentage) to clarify the values.
       - *Colour Hue* - Used to represent the different genres. This colour encoding is the exactly the same as the network diagram to maintain consistency and avoid confusion. For more details, look at Network Diagram
@@ -37,7 +37,15 @@ External Code sources:
       - *Hover* - When a slice is hovered, the slice's colour changes to hot pink and its radius increases. Since length or area is not used as a channel in the pie chart, this does not skew what our data represents. When an actor's slice is hovered, the individual line that connects the actor's node to that hovered genre is displayed on the network diagram.
       - *Click* - When a slice is selected, all the other slices will have their opacity reduced (similar to the network diagram) and the line that shows up on over in the network diagram is fixated.
 
-   **Stacked Bar Chart: TODO**
+   **Stacked Bar Chart**
+    - Marks:
+      - *Line Mark* - the length of a bar chart corresponds to a count of movies.
+    - Channels:
+      - *Hue* - Encodes the "genre" attribute. Colour encoding corresponds to both the network diagram and the pie chart. For more details, see the Network Diagram description.
+      - *Horizontal position on a common scale* - encodes the "year" attribute (2006-2016).
+      - *Length* - the length of a line mark encodes a count of movies.
+    - Interaction/Linkage
+      - Currently, the bar chart is unidirectionally linked to the chord diagram, such that when an actor, or a genre, or both are selected, the bar chart shows the correct distribution of movies produced that contain that actor and/or genre throughout the years from 2006-2016.
 
 2. Task abstraction
 
@@ -124,6 +132,7 @@ External Code sources:
     - Implementing the view (7 hours)
     - Establishing unidirectional link between the view to the chord diagram (2 hours)
     - Exploring and attempting transitioning between stacked and grouped bar charts (7 hours)
+    - Future improvements (Apr 8th): allow users to select bar segments to filter by actor and genre, and set up bidirectional linkage to chord diagram and pie chart to ensure consistency.
 - **Pie Chart**
   - Estimated: N/A
   - Reality: 12-15 hours
