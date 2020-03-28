@@ -32,12 +32,11 @@ class stackedBarChart {
       .range([0, vis.width])
       .padding(0.1);
 
+    // Set vis.xAxis
+    vis.xAxis = d3.axisBottom(vis.xScale);
+
     // Initialize vis.series to "all"
     vis.series = vis.getSeriesFromData(vis.data["all"]);
-    // console.log(vis.data["Action"])
-    // console.log(vis.series)
-
-    vis.xAxis = d3.axisBottom(vis.xScale);
 
     vis.render();
   }
@@ -50,10 +49,13 @@ class stackedBarChart {
     // vis.selectedGenre = "Action"
 
     if (vis.selectedActor === null && vis.selectedGenre === null) {
+      // Nothing is selected
       selectedData = vis.data["all"]
     } else if (vis.selectedActor!== null && vis.selectedGenre === null) {
+      // Only actor is selected
       selectedData = vis.data[vis.selectedActor["actor"]]
     } else if (vis.selectedActor === null && vis.selectedGenre !== null) {
+      // Only genre is selected
       selectedData = vis.data[vis.selectedGenre]
     } else {
       // Both genre AND actor are selected
@@ -95,9 +97,10 @@ class stackedBarChart {
       .data(d => d)
       .join("rect")
         .attr("x", d => vis.xScale(vis.xValue(d.data)))
-        .attr("y", d => vis.yScale(d[1]))
-        .attr("height", d => vis.yScale(d[0]) - vis.yScale(d[1]))
         .attr("width", vis.xScale.bandwidth())
+        .transition(100)
+          .attr("y", d => vis.yScale(d[1]))
+          .attr("height", d => vis.yScale(d[0]) - vis.yScale(d[1]))
 
     // Add x-axis
     vis.xAxisG = vis.chart.append("g")
@@ -115,9 +118,10 @@ class stackedBarChart {
       .tickFormat(d3.format('d'));
 
     // Add y-axis
-    vis.yAxis = vis.chart.append("g")
+    vis.yAxisG = vis.chart.append("g")
       .attr("id", "yAxis")
-      .call(vis.yAxis);
+      .transition(100)
+        .call(vis.yAxis);
 
     // Add chart title
     vis.title = d3.select(vis.config.parentElement).append('text')
