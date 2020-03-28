@@ -1,5 +1,5 @@
 // Uncomment the following line to reprocess data
-//processData();
+// processData();
 
 let movieData;
 let actorToActor;
@@ -10,6 +10,7 @@ let actorYearGenres;
 
 let network;
 let piechart;
+let barchart;
 
 let selectStrokeWidth = 1;
 let numGenres = 7;
@@ -101,6 +102,9 @@ const select = s => {
   network.render();
   piechart.saveLastAngles();
   piechart.update();
+  barchart.selectedActor = selectedActor;
+  barchart.selectedGenre = selectedGenre;
+  barchart.update();
 };
 
 const countDuplicates = (l1, l2) => {
@@ -199,21 +203,34 @@ const initializeBarchart = data => {
                                   {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
   });
 
-  // fill in the counts
+  // fill in the counts for each genre entity
   data["all"].forEach((yearObj) => {
       index = yearObj["year"] - 2006
     Object.entries(yearObj).forEach(([genre, count]) => {
       if (genre !== "year") {
+        // fill in genre with its count
         data[genre][index][genre] = count
+        // fill in all other genres with count = 0
+        topGenres.forEach((genre2) => {
+          if (genre2 !== genre) {
+            data[genre][index][genre2] = 0
+          }
+        });
       }
     });
   });
 
+  // finally, add a "columns" property to data with the top genres
+  data["columns"] = topGenres
+
   // console.log(data)
 
-  // barchart.data = data;
+  barchart.data = data;
+  barchart.colourScale = colourScale;
+  // console.log(data["all"])
+  // console.log(d3.stack().keys(barchart.data["columns"].slice(1))(barchart.data["all"]))
 
-  // barchart.initVis();
+  barchart.initVis();
 };
 
 const initializePieChart = data => {
