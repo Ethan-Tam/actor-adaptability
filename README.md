@@ -14,6 +14,7 @@ External Code sources:
 1. Data abstraction, connection to interaction aspects and visual encoding choices
 
   **Network Diagram:**
+
   - Marks:
     - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
 
@@ -27,8 +28,10 @@ External Code sources:
       - *Click (heavyweight)* - When a node is selected/clicked, the data is filtered by reducing the opacity of all other nodes. Also, more details are shown by lines that connect that specified node to their affiliated genres appear. If a genre (ring segment) is clicked, all lines that connect actors to that specified genre will appear and the data will be filtered by reducing the opacity of the ndoes affiliated with actors not involved in this genre. The other views will change once an actor is selected to show additional information about that specific person. If no actor is selected, the other views (the pie and stacked charts) will  display the overall information of all the actors.
 
   **Pie Chart:**
-    - Marks:
-      - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
+
+  - Marks:
+    - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
+
     - Channels:
       - *Angle* - the total angle of a slice in the pie chart is proportional to the percentage of movies in that specified genre over the past decade. We are aware that this encoding may not be the most effective, but we really wanted to showcase a part to whole relationship which is why we used a pie chart. To further assist the user, we plan on adding labels (but the actual quantity and the percentage) to clarify the values.
       - *Colour Hue* - Used to represent the different genres. This colour encoding is the exactly the same as the network diagram to maintain consistency and avoid confusion. For more details, look at Network Diagram
