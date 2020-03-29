@@ -52,6 +52,14 @@ External Code sources:
 
   - Our visualization aims to help the user realize the different genre of movies a specific actor has played over the past decade. Specifically, the network diagram allows users to browse through different actors and discover unique facts about a given actor, the pie chart will help the user discover the genre distribution of genres for a specific or group of actors, and the stacked bar chart will show the genre trends of each actor over the past decade.
 
+### Prototype Screenshots
+1. No genre or actor selected
+![](./screenshots/chord-all.png)
+2. Genre selected ("Action")
+![](./screenshots/chord-genre.png)
+3. Actor selected ("Scarlett Johansson")
+![](./screenshots/chord-actor.png)
+
 ### Original Data Source and Data Prepocessing Pipeline
 
 - As linked above, we got our our original IMDB movies dataset from Kaggle.com. This dataset includes movies' genres, actors, and years produced, among other attributes. Our preprocessing pipeline consists of taking that information and transforming it into different JSON objects that are easier to manipulate and dramatically simplify the coding needed to produce the visualizations. Five JSON files are created as a result of our preprocessing pipeline:
@@ -66,11 +74,11 @@ External Code sources:
   - **Network Diagram**
     - After talking to TAs and Professor Munzner, our initial chord diagram visualization proved to be ineffective and confusing in acheiving our task. We originally represented each actor with a set of chords (as each individual chord signified a switch in movie genres of a given actor) which is confusing and unintuitive. The chord diagram also does not scale well to our dataset. Even after bundling and setting each movie with a single main genre, it was still extremely difficult to read (Figure 1). We ended up creating something that looked visually appealing by hiding the chords behind a band but it was hacky and still did not resolve our confusing chord mark (Figure 2). Therefore, we have decided to pivot to represent each actor with a node in a network diagram (Figure 3).
       - Figure 1
-      - ![](https://p83.f1.n0.cdn.getcloudapp.com/items/qGuob6qw/Image%202020-03-24%20at%202.34.58%20PM.png?v=27677a7d9495ca263d48dcbc20171e1d)
+      - ![](./screenshots/old-chord.png)
       - Figure 2
-      - ![](https://p83.f1.n0.cdn.getcloudapp.com/items/04uK8vQ0/Image%202020-03-24%20at%202.32.49%20PM.png?v=b99edca28791f7ec6293f2c345ea18df)
+      - ![](./screenshots/old-chord2.png)
       - Figure 3
-      - ![](https://scontent.fcxh2-1.fna.fbcdn.net/v/t1.15752-9/90441888_225077685353705_6979538906467270656_n.png?_nc_cat=104&_nc_sid=b96e70&_nc_ohc=dlolag6-tT8AX8yiq1k&_nc_ht=scontent.fcxh2-1.fna&oh=739c5853e3b67c55de82398249c03c22&oe=5E9F3015)
+      - ![](./screenshots/chord-proto.png)
   - **Adjacency Matrix, Pyramid Chart, and Barchart tooltip**
     - Upon further discussion, we realize that these views were unique but did not link well with our main chord/network diagram view as there was little to no relationship between these visualizations. In addition, both these visualizations do not scale well and deciding which actors to completely filter out became a daunting task. These intended views also did not align with our task objective of connecting each actor to genres. For these reasons, we have decided to scrap these views and replace them.
   - **Pie Chart**
