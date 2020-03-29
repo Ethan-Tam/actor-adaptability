@@ -13,37 +13,40 @@ External Code sources:
 
 1. Data abstraction, connection to interaction aspects and visual encoding choices
 
-  **Network Diagram:**
-    - Marks:
-      - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
-    - Channels:
-      - *Spatial Positioning* - We used spatial positioning to display the actor's movie genre ratio where the actors that act in primarily action movies will have their representative nodes gravitated towards the "action segment" of the ring in the network diagram. If an actor has only worked in one genre, their node will be placed outside the ring into the affiliated genre.
-      - *Colour Hue* - We used colour hue to categorically disguish the different genres. Our rationale for this decision is due to the fact that colour is more effective that using symbols/shapes. We understand that colour hue does not scale well, but since we are only representing 7 different types of genres (which includes "other") we believe that this channel is appropriate. The colour of each node signifies the mode of an actor. That is, the genre they have done the most movies in. If the node is grey, it means that the actor has more than one mode. We used grey instead of combining hues as combining hues may complete mutate the colour to something completely different which may be unintuitive. In addition, if we were to combine the hues, this would create a lot more different colours which is difficult to distunguish and ruins our specified cardinality of 8.
-      - *Area (2-D size)* - The actor's node size represents the number of movies they have acted in over the past decade. This distinction, however, is subtle and is merely present to provide the viewer with an overall idea rather than concrete numerical information. This is why we use our other views to display more detailed and quantifiable information about a specific actor. There are 1985 actors in our data.
-      - *Line Width* - When an actor is selected/clicked on the network diagram, lines appear which connects to the genres which that specific actor has worked on. The width of the lines indicate the number of movies of that specific genre the actor has been a part of. Similar to node area size, this change is subtle and it is difficult for the user to fully derrive the quantitative information which again presents the need for our other views. There are 3029 links.
-    - Interactions/Linkage
-      - *Hover (lightweight)* - When a node is hovered, the actor's node becomes higlighted (outlined) and a detail tooltip appears which displays the name of the actor which the node represents. When a genre (ring segment) is hovered it and its name also get highlighted and all the actors that have acted in one or more movies in that given genre are also highlighted.
-      - *Click (heavyweight)* - When a node is selected/clicked, the data is filtered by reducing the opacity of all other nodes. Also, more details are shown by lines that connect that specified node to their affiliated genres appear. If a genre (ring segment) is clicked, all lines that connect actors to that specified genre will appear and the data will be filtered by reducing the opacity of the ndoes affiliated with actors not involved in this genre. The other views will change once an actor is selected to show additional information about that specific person. If no actor is selected, the other views (the pie and stacked charts) will  display the overall information of all the actors.
+**Network Diagram:**
+  - Marks:
+    - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
+  - Channels:
+    - *Spatial Positioning* - We used spatial positioning to display the actor's movie genre ratio where the actors that act in primarily action movies will have their representative nodes gravitated towards the "action segment" of the ring in the network diagram. If an actor has only worked in one genre, their node will be placed outside the ring into the affiliated genre.
+    - *Colour Hue* - We used colour hue to categorically disguish the different genres. Our rationale for this decision is due to the fact that colour is more effective that using symbols/shapes. We understand that colour hue does not scale well, but since we are only representing 7 different types of genres (which includes "other") we believe that this channel is appropriate. The colour of each node signifies the mode of an actor. That is, the genre they have done the most movies in. If the node is grey, it means that the actor has more than one mode. We used grey instead of combining hues as combining hues may complete mutate the colour to something completely different which may be unintuitive. In addition, if we were to combine the hues, this would create a lot more different colours which is difficult to distunguish and ruins our specified cardinality of 8.
+    - *Area (2-D size)* - The actor's node size represents the number of movies they have acted in over the past decade. This distinction, however, is subtle and is merely present to provide the viewer with an overall idea rather than concrete numerical information. This is why we use our other views to display more detailed and quantifiable information about a specific actor. There are 1985 actors in our data.
+    - *Line Width* - When an actor is selected/clicked on the network diagram, lines appear which connects to the genres which that specific actor has worked on. The width of the lines indicate the number of movies of that specific genre the actor has been a part of. Similar to node area size, this change is subtle and it is difficult for the user to fully derrive the quantitative information which again presents the need for our other views. There are 3029 links.
+  - Interactions/Linkage
+    - *Hover (lightweight)* - When a node is hovered, the actor's node becomes higlighted (outlined) and a detail tooltip appears which displays the name of the actor which the node represents. When a genre (ring segment) is hovered it and its name also get highlighted and all the actors that have acted in one or more movies in that given genre are also highlighted.
+    - *Click (heavyweight)* - When a node is selected/clicked, the data is filtered by reducing the opacity of all other nodes. Also, more details are shown by lines that connect that specified node to their affiliated genres appear. If a genre (ring segment) is clicked, all lines that connect actors to that specified genre will appear and the data will be filtered by reducing the opacity of the ndoes affiliated with actors not involved in this genre. The other views will change once an actor is selected to show additional information about that specific person. If no actor is selected, the other views (the pie and stacked charts) will  display the overall information of all the actors.
 
-  **Pie Chart:**
-    - Marks:
-      - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
-    - Channels:
-      - *Angle* - the total angle of a slice in the pie chart is proportional to the percentage of movies in that specified genre over the past decade. We are aware that this encoding may not be the most effective, but we really wanted to showcase a part to whole relationship which is why we used a pie chart. To further assist the user, we plan on adding labels (but the actual quantity and the percentage) to clarify the values.
-      - *Colour Hue* - Used to represent the different genres. This colour encoding is the exactly the same as the network diagram to maintain consistency and avoid confusion. For more details, look at Network Diagram
-    - Interaction/Linkage
-      - *Hover* - When a slice is hovered, the slice's colour changes to hot pink and its radius increases. Since length or area is not used as a channel in the pie chart, this does not skew what our data represents. When an actor's slice is hovered, the individual line that connects the actor's node to that hovered genre is displayed on the network diagram.
-      - *Click* - When a slice is selected, all the other slices will have their opacity reduced (similar to the network diagram) and the line that shows up on over in the network diagram is fixated.
+**Pie Chart:**
 
-   **Stacked Bar Chart**
-    - Marks:
-      - *Line Mark* - the length of a bar chart corresponds to a count of movies.
-    - Channels:
-      - *Hue* - Encodes the "genre" attribute. Colour encoding corresponds to both the network diagram and the pie chart. For more details, see the Network Diagram description.
-      - *Horizontal position on a common scale* - encodes the "year" attribute (2006-2016).
-      - *Length* - the length of a line mark encodes a count of movies.
-    - Interaction/Linkage
-      - Currently, the bar chart is unidirectionally linked to the chord diagram, such that when an actor, or a genre, or both are selected, the bar chart shows the correct distribution of movies produced that contain that actor and/or genre throughout the years from 2006-2016.
+  - Marks:
+    - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
+
+  - Channels:
+    - *Angle* - the total angle of a slice in the pie chart is proportional to the percentage of movies in that specified genre over the past decade. We are aware that this encoding may not be the most effective, but we really wanted to showcase a part to whole relationship which is why we used a pie chart. To further assist the user, we plan on adding labels (but the actual quantity and the percentage) to clarify the values.
+    - *Colour Hue* - Used to represent the different genres. This colour encoding is the exactly the same as the network diagram to maintain consistency and avoid confusion. For more details, look at Network Diagram
+  - Interaction/Linkage
+    - *Hover* - When a slice is hovered, the slice's colour changes to hot pink and its radius increases. Since length or area is not used as a channel in the pie chart, this does not skew what our data represents. When an actor's slice is hovered, the individual line that connects the actor's node to that hovered genre is displayed on the network diagram.
+    - *Click* - When a slice is selected, all the other slices will have their opacity reduced (similar to the network diagram) and the line that shows up on over in the network diagram is fixated.
+
+  **Stacked Bar Chart**
+  - Marks:
+    - *Line Mark* - the length of a bar chart corresponds to a count of movies.
+
+  - Channels:
+    - *Hue* - Encodes the "genre" attribute. Colour encoding corresponds to both the network diagram and the pie chart. For more details, see the Network Diagram description.
+    - *Horizontal position on a common scale* - encodes the "year" attribute (2006-2016).
+    - *Length* - the length of a line mark encodes a count of movies.
+  - Interaction/Linkage
+    - Currently, the bar chart is unidirectionally linked to the chord diagram, such that when an actor, or a genre, or both are selected, the bar chart shows the correct distribution of movies produced that contain that actor and/or genre throughout the years from 2006-2016.
 
 2. Task abstraction
 
