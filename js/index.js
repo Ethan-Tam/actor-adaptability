@@ -1,40 +1,41 @@
 // Uncomment the following line to reprocess data
-// processData();
+//processData();
 
+// Data
 let movieData;
-let actorToActor;
 let actorToGenre;
 let genreToActor;
 let actorLinks;
 let actorYearGenres;
+let genres;
 
+// Views
 let network;
 let piechart;
 let barchart;
 
+// Constants
 let selectStrokeWidth = 1;
 let numGenres = 7;
-let genres;
-
+let transitionTime = 300;
 const fullOpacity = 1;
 const fadeOpacity = 0.3;
 
+// Common colour scale
 let colourScale;
 
 Promise.all([
   d3.csv('data/movie-data.csv'),
-  d3.json('data/actor-to-actors.json'),
   d3.json('data/actor-to-genres.json'),
   d3.json('data/genre-to-actors.json'),
   d3.json('data/actor-links.json'),
   d3.json('data/actor-to-year-genres.json')
 ]).then(files => {
   moveData = files[0];
-  actorToActor = files[1];
-  actorToGenre = files[2];
-  genreToActor = files[3];
-  actorLinks = files[4];
-  actorYearGenres = files[5];
+  actorToGenre = files[1];
+  genreToActor = files[2];
+  actorLinks = files[3];
+  actorYearGenres = files[4];
 
   // Compute "Other" category
   topGenres = genreToActor.slice(0, numGenres - 1);
@@ -63,13 +64,14 @@ Promise.all([
   // Create colour scale
   colourScale = d3.scaleOrdinal(d3.schemeTableau10).domain(genres);
 
-  initializeNetwork(files[3]);
-  initializePieChart(topGenres);
-  initializeBarchart(files[5]);
+  // Initialize views
+  initializeNetwork();
+  initializePieChart();
+  initializeBarchart();
 });
 
+// Hover callback functions
 let hovered = null;
-
 const hoverSlice = slice => {
   piechart.hoveredSlice = slice;
   piechart.saveLastAngles();
@@ -81,9 +83,9 @@ const hover = s => {
   network.render();
 };
 
+// Click callback function
 let selectedActor = null;
 let selectedGenre = null;
-
 const select = s => {
   if (s === null) {
     selectedActor = null;
@@ -108,6 +110,7 @@ const select = s => {
   barchart.update();
 };
 
+// Count common elements
 const countDuplicates = (l1, l2) => {
   let count = 0;
   l1.forEach(ai => {
@@ -118,7 +121,9 @@ const countDuplicates = (l1, l2) => {
   return count;
 };
 
-const initializeNetwork = data => {
+// Initialize network actor view
+const initializeNetwork = () => {
+  // Make matrix for chord diaram ring
   let matrix = [];
   let keys = d3.range(numGenres);
   keys.forEach(i => {
@@ -149,12 +154,13 @@ const initializeNetwork = data => {
   network.links = actorLinks;
   network.fullOpacity = fullOpacity;
   network.fadeOpacity = fadeOpacity;
+  network.transitionTime = transitionTime;
 
   network.initVis();
 };
 
+// Initialize bar chart view
 const initializeBarchart = data => {
-
   barchart = new stackedBarChart({
     parentElement: '#stacked-bar-chart',
     containerWidth: 400,
@@ -167,11 +173,10 @@ const initializeBarchart = data => {
   topGenresObj.forEach((genreObj) => {
     topGenres.push(genreObj["genre"])
   });
-  // console.log(topGenres)
 
   // go through actor-to-genre-year, eliminate nontop genres, add "other" genre
   // for each actor in array
-  Object.entries(data).forEach(([key, val]) => {
+  Object.entries(actorYearGenres).forEach(([key, val]) => {
     // for each "year object" in array
     val.forEach((yearObj) => {
       // add all genres not in topGenres to yearObj with count = 0
@@ -200,20 +205,20 @@ const initializeBarchart = data => {
 
   // create top genre data from "all" data
   topGenres.forEach((genre) => {
-    data[genre] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
+    actorYearGenres[genre] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
                                   {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
   });
 
   // fill in the counts for each genre entity
-  data["all"].forEach((yearObj, index) => {
+  actorYearGenres["all"].forEach((yearObj, index) => {
     Object.entries(yearObj).forEach(([genre, count]) => {
       if (genre !== "year") {
         // fill in genre with its count
-        data[genre][index][genre] = count
+        actorYearGenres[genre][index][genre] = count
         // fill in all other genres with count = 0
         topGenres.forEach((genre2) => {
           if (genre2 !== genre) {
-            data[genre][index][genre2] = 0
+            actorYearGenres[genre][index][genre2] = 0
           }
         });
       }
@@ -221,32 +226,33 @@ const initializeBarchart = data => {
   });
 
   // finally, add a "columns" property to data with the top genres
-  data["columns"] = topGenres
+  actorYearGenres["columns"] = topGenres
 
-  // console.log(data)
-
-  barchart.data = data;
+  barchart.data = actorYearGenres;
   barchart.colourScale = colourScale;
   barchart.selectedActor = null;
   barchart.selectedGenre = null;
-  // console.log(data["all"])
-  // console.log(d3.stack().keys(barchart.data["columns"].slice(1))(barchart.data["all"]))
+  barchart.transitionTime = transitionTime;
 
   barchart.initVis();
 };
 
-const initializePieChart = data => {
+// Initialize pie chart view
+const initializePieChart = () => {
   piechart = new PieChart({
     parentElement: '#pie-chart',
     containerWidth: 400,
     containerHeight: 400,
   });
-  piechart.initialData = data;
+
+  piechart.initialData = topGenres;
   piechart.colourScale = colourScale;
   piechart.genres = genres;
   piechart.genreMap = genreMap;
   piechart.fullOpacity = fullOpacity;
   piechart.fadeOpacity = fadeOpacity;
+  piechart.transitionTime = transitionTime;
   piechart.hover = hoverSlice;
+
   piechart.initVis();
 };

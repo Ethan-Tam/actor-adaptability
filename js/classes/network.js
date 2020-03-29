@@ -204,7 +204,7 @@ class Network {
 
     // Show lines on select
     vis.linkLines
-      .transition(100)
+      .transition().duration(vis.transitionTime)
         .attr('opacity', d => {
           if ((vis.selectedActor === null ? true :
               vis.selectedActor.actor === d.actor) &&
@@ -224,7 +224,7 @@ class Network {
           else
             return 0;
         })
-      .transition(100)
+      .transition().duration(vis.transitionTime)
         .attr('opacity', d => {
           if ((vis.selectedActor === null ? true :
               vis.selectedActor === d) &&
@@ -243,7 +243,7 @@ class Network {
           else
             return 0;
         })
-      .transition(100)
+      .transition().duration(vis.transitionTime)
         .attr('opacity', d => {
           if ((vis.selectedActor === null ? true :
               vis.selectedActor.genres.map(g => g.genre).includes(vis.genres[d.index])) &&

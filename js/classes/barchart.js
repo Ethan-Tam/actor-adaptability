@@ -111,7 +111,7 @@ class stackedBarChart {
     let vis = this;
 
     vis.yAxisG
-      .transition(100)
+      .transition().duration(vis.transitionTime)
       .call(vis.yAxis);
 
     // assign colours and render bars
@@ -125,7 +125,7 @@ class stackedBarChart {
       .join("rect")
         .attr("x", d => vis.xScale(vis.xValue(d.data)))
         .attr("width", vis.xScale.bandwidth())
-        .transition(100)
+        .transition().duration(vis.transitionTime)
           .attr("y", d => vis.yScale(d[1]))
           .attr("height", d => vis.yScale(d[0]) - vis.yScale(d[1]))
   }

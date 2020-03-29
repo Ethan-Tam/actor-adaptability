@@ -103,7 +103,7 @@ class PieChart {
       .on('mouseout', () => {
         vis.hover(null);
       })
-      .transition(100)
+      .transition().duration(vis.transitionTime)
       .attrTween('d', d => {
         if (d == vis.hoveredSlice) {
           return vis.arcTween(vis.expandedSegments)(d);
