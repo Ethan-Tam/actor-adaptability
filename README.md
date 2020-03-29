@@ -15,8 +15,8 @@ External Code sources:
 
   **Network Diagram:**
 
-  - Marks:
-    - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
+    - Marks:
+      - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
 
     - Channels:
       - *Spatial Positioning* - We used spatial positioning to display the actor's movie genre ratio where the actors that act in primarily action movies will have their representative nodes gravitated towards the "action segment" of the ring in the network diagram. If an actor has only worked in one genre, their node will be placed outside the ring into the affiliated genre.
@@ -29,8 +29,8 @@ External Code sources:
 
   **Pie Chart:**
 
-  - Marks:
-    - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
+    - Marks:
+      - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
 
     - Channels:
       - *Angle* - the total angle of a slice in the pie chart is proportional to the percentage of movies in that specified genre over the past decade. We are aware that this encoding may not be the most effective, but we really wanted to showcase a part to whole relationship which is why we used a pie chart. To further assist the user, we plan on adding labels (but the actual quantity and the percentage) to clarify the values.
@@ -42,6 +42,7 @@ External Code sources:
    **Stacked Bar Chart**
     - Marks:
       - *Line Mark* - the length of a bar chart corresponds to a count of movies.
+
     - Channels:
       - *Hue* - Encodes the "genre" attribute. Colour encoding corresponds to both the network diagram and the pie chart. For more details, see the Network Diagram description.
       - *Horizontal position on a common scale* - encodes the "year" attribute (2006-2016).
