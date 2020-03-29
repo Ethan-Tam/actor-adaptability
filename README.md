@@ -14,7 +14,6 @@ External Code sources:
 1. Data abstraction, connection to interaction aspects and visual encoding choices
 
   **Network Diagram:**
-
     - Marks:
       - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
     - Channels:
@@ -27,7 +26,6 @@ External Code sources:
       - *Click (heavyweight)* - When a node is selected/clicked, the data is filtered by reducing the opacity of all other nodes. Also, more details are shown by lines that connect that specified node to their affiliated genres appear. If a genre (ring segment) is clicked, all lines that connect actors to that specified genre will appear and the data will be filtered by reducing the opacity of the ndoes affiliated with actors not involved in this genre. The other views will change once an actor is selected to show additional information about that specific person. If no actor is selected, the other views (the pie and stacked charts) will  display the overall information of all the actors.
 
   **Pie Chart:**
-
     - Marks:
       - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
     - Channels:
