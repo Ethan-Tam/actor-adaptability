@@ -227,6 +227,8 @@ const initializeBarchart = data => {
 
   barchart.data = data;
   barchart.colourScale = colourScale;
+  barchart.selectedActor = null;
+  barchart.selectedGenre = null;
   // console.log(data["all"])
   // console.log(d3.stack().keys(barchart.data["columns"].slice(1))(barchart.data["all"]))
 
