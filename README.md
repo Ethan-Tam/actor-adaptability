@@ -14,8 +14,9 @@ External Code sources:
 1. Data abstraction, connection to interaction aspects and visual encoding choices
 
   **Network Diagram:**
-    - Marks:
-      - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
+  - Marks:
+    - *Point Mark* - Every actor in this dataset is represented with a node on the network diagram.
+
     - Channels:
       - *Spatial Positioning* - We used spatial positioning to display the actor's movie genre ratio where the actors that act in primarily action movies will have their representative nodes gravitated towards the "action segment" of the ring in the network diagram. If an actor has only worked in one genre, their node will be placed outside the ring into the affiliated genre.
       - *Colour Hue* - We used colour hue to categorically disguish the different genres. Our rationale for this decision is due to the fact that colour is more effective that using symbols/shapes. We understand that colour hue does not scale well, but since we are only representing 7 different types of genres (which includes "other") we believe that this channel is appropriate. The colour of each node signifies the mode of an actor. That is, the genre they have done the most movies in. If the node is grey, it means that the actor has more than one mode. We used grey instead of combining hues as combining hues may complete mutate the colour to something completely different which may be unintuitive. In addition, if we were to combine the hues, this would create a lot more different colours which is difficult to distunguish and ruins our specified cardinality of 8.
