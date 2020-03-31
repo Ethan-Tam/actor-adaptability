@@ -48,8 +48,7 @@ class PieChart {
     // Initialize previous angles all to zero
     vis.lastAngles = {};
     vis.genres.forEach(d => {
-      vis.lastAngles[d] = { startAngle: 0,
-                            endAngle: 0 };
+      vis.lastAngles[d] = { startAngle: 0, endAngle: 0 };
     });
     vis.update();
   }
@@ -65,16 +64,20 @@ class PieChart {
     } else {
       // Add all the unincluded genres with count zero
       let genreData = [...vis.selected.genres];
-      genreData.push(...vis.genres.filter(d => {
-        return !vis.selected.genres.map(g => g.genre).includes(d);
-      }).map(d => {
-        return { genre: d, count: 0 };
-      }));
+      genreData.push(
+        ...vis.genres
+          .filter(d => {
+            return !vis.selected.genres.map(g => g.genre).includes(d);
+          })
+          .map(d => {
+            return { genre: d, count: 0 };
+          }),
+      );
       vis.data = d3
         .pie()
         .value(d => d.count)
         .sort((a, b) => vis.genreMap[a.genre] - vis.genreMap[b.genre])(
-        genreData
+        genreData,
       );
       vis.title = vis.selected.actor;
     }
@@ -92,9 +95,9 @@ class PieChart {
       .text(vis.title)
       .attr('transform', `translate(${-vis.title.length * 4},${-130})`);
 
-    vis.slices = vis.chart.selectAll('path').data(vis.data, d => d.data.genre);
-
-    vis.slices
+    vis.slices = vis.chart
+      .selectAll('path')
+      .data(vis.data, d => d.data.genre)
       .join('path')
       .attr('fill', d => vis.colourScale(d.data.genre))
       .on('mouseover', d => {
@@ -102,14 +105,23 @@ class PieChart {
       })
       .on('mouseout', () => {
         vis.hover(null);
+      });
+
+    vis.slices
+      .attr('stroke', 'black')
+      .attr('stroke-width', d => {
+        if (d == vis.hoveredSlice) {
+          return 2;
+        }
+        return 0;
       })
-      .transition().duration(vis.transitionTime)
+      .transition()
+      .duration(vis.transitionTime)
       .attrTween('d', d => {
         if (d == vis.hoveredSlice) {
           return vis.arcTween(vis.expandedSegments)(d);
-        } else {
-          return vis.arcTween(vis.segments)(d);
         }
+        return vis.arcTween(vis.segments)(d);
       });
   }
 
@@ -117,10 +129,14 @@ class PieChart {
   arcTween(arc) {
     return d => {
       let vis = this;
-      let interpolateStart = d3.interpolate(vis.lastAngles[d.data.genre].startAngle,
-                                            d.startAngle);
-      let interpolateEnd = d3.interpolate(vis.lastAngles[d.data.genre].endAngle,
-                                          d.endAngle);
+      let interpolateStart = d3.interpolate(
+        vis.lastAngles[d.data.genre].startAngle,
+        d.startAngle,
+      );
+      let interpolateEnd = d3.interpolate(
+        vis.lastAngles[d.data.genre].endAngle,
+        d.endAngle,
+      );
       return t => {
         d.startAngle = interpolateStart(t);
         d.endAngle = interpolateEnd(t);
@@ -133,8 +149,10 @@ class PieChart {
   saveLastAngles() {
     let vis = this;
     vis.data.forEach(d => {
-      vis.lastAngles[d.data.genre] = { startAngle: d.startAngle,
-                                       endAngle: d.endAngle };
+      vis.lastAngles[d.data.genre] = {
+        startAngle: d.startAngle,
+        endAngle: d.endAngle,
+      };
     });
   }
 }

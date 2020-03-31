@@ -159,6 +159,26 @@ const initializeNetwork = () => {
   network.initVis();
 };
 
+// Initialize pie chart view
+const initializePieChart = () => {
+  piechart = new PieChart({
+    parentElement: '#pie-chart',
+    containerWidth: 400,
+    containerHeight: 400,
+  });
+
+  piechart.initialData = topGenres;
+  piechart.colourScale = colourScale;
+  piechart.genres = genres;
+  piechart.genreMap = genreMap;
+  piechart.fullOpacity = fullOpacity;
+  piechart.fadeOpacity = fadeOpacity;
+  piechart.transitionTime = transitionTime;
+  piechart.hover = hoverSlice;
+
+  piechart.initVis();
+};
+
 // Initialize bar chart view
 const initializeBarchart = data => {
   barchart = new stackedBarChart({
@@ -235,24 +255,4 @@ const initializeBarchart = data => {
   barchart.transitionTime = transitionTime;
 
   barchart.initVis();
-};
-
-// Initialize pie chart view
-const initializePieChart = () => {
-  piechart = new PieChart({
-    parentElement: '#pie-chart',
-    containerWidth: 400,
-    containerHeight: 400,
-  });
-
-  piechart.initialData = topGenres;
-  piechart.colourScale = colourScale;
-  piechart.genres = genres;
-  piechart.genreMap = genreMap;
-  piechart.fullOpacity = fullOpacity;
-  piechart.fadeOpacity = fadeOpacity;
-  piechart.transitionTime = transitionTime;
-  piechart.hover = hoverSlice;
-
-  piechart.initVis();
 };
