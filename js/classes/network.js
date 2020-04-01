@@ -191,7 +191,7 @@ class Network {
         .attr('y1', d => (d.source.y + vis.centreY))
         .attr('x2', d => (d.target.x + vis.centreX))
         .attr('y2', d => (d.target.y + vis.centreY))
-        .on('click', d => vis.select(null));;
+        .on('click', () => vis.select(null));;
 
     d3.selectAll('.link').lower();
     d3.selectAll('#background').lower();

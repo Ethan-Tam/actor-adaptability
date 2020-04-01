@@ -86,6 +86,19 @@ const hover = s => {
 // Click callback function
 let selectedActor = null;
 let selectedGenre = null;
+let selectedSlice = null;
+
+const selectSlice = s => {
+  selectedSlice = s
+  selectedGenre = selectedSlice.data.genre
+  network.selectedGenre = selectedGenre;
+  network.render();
+  piechart.saveLastAngles();
+  piechart.update();
+  barchart.selectedGenre = selectedGenre;
+  barchart.update();
+}
+
 const select = s => {
   if (s === null) {
     selectedActor = null;
@@ -99,9 +112,12 @@ const select = s => {
       selectedGenre = null;
     }
   }
+  let selectedSlice = null
+
   network.selectedActor = selectedActor;
   network.selectedGenre = selectedGenre;
-  piechart.selected = selectedActor;
+  piechart.selectedActor = selectedActor;
+  piechart.selectedSlice = selectedSlice;
   network.render();
   piechart.saveLastAngles();
   piechart.update();
@@ -175,6 +191,7 @@ const initializePieChart = () => {
   piechart.fadeOpacity = fadeOpacity;
   piechart.transitionTime = transitionTime;
   piechart.hover = hoverSlice;
+  piechart.select = selectSlice;
 
   piechart.initVis();
 };

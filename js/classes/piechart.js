@@ -55,7 +55,7 @@ class PieChart {
 
   update() {
     let vis = this;
-    if (vis.selected == null) {
+    if (vis.selectedActor == null) {
       vis.data = d3
         .pie()
         .value(d => d.actors.length)
@@ -63,11 +63,11 @@ class PieChart {
       vis.title = 'All Actors';
     } else {
       // Add all the unincluded genres with count zero
-      let genreData = [...vis.selected.genres];
+      let genreData = [...vis.selectedActor.genres];
       genreData.push(
         ...vis.genres
           .filter(d => {
-            return !vis.selected.genres.map(g => g.genre).includes(d);
+            return !vis.selectedActor.genres.map(g => g.genre).includes(d);
           })
           .map(d => {
             return { genre: d, count: 0 };
@@ -79,7 +79,7 @@ class PieChart {
         .sort((a, b) => vis.genreMap[a.genre] - vis.genreMap[b.genre])(
         genreData,
       );
-      vis.title = vis.selected.actor;
+      vis.title = vis.selectedActor.actor;
     }
     vis.render();
   }
@@ -105,7 +105,10 @@ class PieChart {
       })
       .on('mouseout', () => {
         vis.hover(null);
-      });
+      })
+      .on('click', d => {
+        vis.select(d)
+      })
 
     vis.slices
       .attr('stroke', 'black')
@@ -114,6 +117,12 @@ class PieChart {
           return 2;
         }
         return 0;
+      })
+      .attr('opacity', d => {
+        if (vis.selectedSlice == null || d == vis.selectedSlice) {
+          return vis.fullOpacity
+        }
+        return vis.fadeOpacity
       })
       .transition()
       .duration(vis.transitionTime)
