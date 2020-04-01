@@ -114,7 +114,7 @@ class PieChart {
       .attr('stroke', 'black')
       .attr('stroke-width', d => (d == vis.hoveredSlice ? 2 : 0))
       .attr('opacity', d => {
-        if (vis.selectedSlice == null || d.data == vis.selectedSlice.data) {
+        if (vis.selectedGenre == null || d.data.genre == vis.selectedGenre) {
           return vis.fullOpacity;
         }
         return vis.fadeOpacity;

@@ -89,11 +89,10 @@ let selectedGenre = null;
 let selectedSlice = null;
 
 const selectSlice = s => {
-  selectedSlice = s
-  selectedGenre = selectedSlice.data.genre
+  selectedGenre = s.data.genre
   network.selectedGenre = selectedGenre;
   network.render();
-  piechart.selectedSlice = selectedSlice;
+  piechart.selectedGenre = selectedGenre;
   piechart.saveLastAngles();
   piechart.update();
   barchart.selectedGenre = selectedGenre;
@@ -120,6 +119,7 @@ const select = s => {
   piechart.selectedActor = selectedActor;
   piechart.selectedSlice = selectedSlice;
   network.render();
+  piechart.selectedGenre = selectedGenre;
   piechart.saveLastAngles();
   piechart.update();
   barchart.selectedActor = selectedActor;
