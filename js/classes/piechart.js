@@ -107,22 +107,17 @@ class PieChart {
         vis.hover(null);
       })
       .on('click', d => {
-        vis.select(d)
-      })
+        vis.select(d);
+      });
 
     vis.slices
       .attr('stroke', 'black')
-      .attr('stroke-width', d => {
-        if (d == vis.hoveredSlice) {
-          return 2;
-        }
-        return 0;
-      })
+      .attr('stroke-width', d => (d == vis.hoveredSlice ? 2 : 0))
       .attr('opacity', d => {
-        if (vis.selectedSlice == null || d == vis.selectedSlice) {
-          return vis.fullOpacity
+        if (vis.selectedSlice == null || d.data == vis.selectedSlice.data) {
+          return vis.fullOpacity;
         }
-        return vis.fadeOpacity
+        return vis.fadeOpacity;
       })
       .transition()
       .duration(vis.transitionTime)
