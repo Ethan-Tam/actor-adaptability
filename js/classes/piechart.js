@@ -21,6 +21,7 @@ class PieChart {
   initVis() {
     let vis = this;
 
+    // calculates the midpoint of the slice
     vis.midAngle = d => {
       if (d.endAngle == d.startAngle) {
         return 0;
@@ -93,45 +94,16 @@ class PieChart {
       );
       vis.title = vis.selectedActor.actor;
     }
-
-    // adds polylines to pie chart
+  
     vis.polyline = vis.chart
       .select('.lines')
       .selectAll('polyline')
-      .data(vis.data)
-      .join('polyline')
-      .attr('points', d => {
-        const pos = vis.expandedSegments.centroid(d);
-        const midAngle = vis.midAngle(d);
-        // only create a polyline if the value is greater than 0
-        if (midAngle > 0) {
-          pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
-          return [
-            vis.segments.centroid(d).map(n => n * 2),
-            vis.expandedSegments.centroid(d).map(n => n * 2),
-            [pos[0] * 1.5, pos[1] * 2],
-          ];
-        }
-      });
+      .data(vis.data);
 
     vis.labels = vis.chart
       .select('.label')
       .selectAll('text')
       .data(vis.data);
-    vis.labels
-      .join('text')
-      .attr('transform', d => {
-        const pos = vis.expandedSegments.centroid(d);
-        pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
-        const xMultiplier = pos[0] > 0 ? 1.55 : 1.75;
-        return 'translate(' + [pos[0] * xMultiplier, pos[1] * 2] + ')';
-      })
-      .text(d => {
-        if (d.value > 0) {
-          return d.value;
-        }
-      })
-      .attr('font-size', 12);
 
     vis.render();
   }
@@ -181,6 +153,40 @@ class PieChart {
         }
         return vis.arcTween(vis.segments)(d);
       });
+
+
+    // adds data labels to pie chart
+    vis.labels
+      .join('text')
+      .attr('transform', d => {
+        const pos = vis.expandedSegments.centroid(d);
+        pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
+        const xMultiplier = pos[0] > 0 ? 1.55 : 1.75;
+        return 'translate(' + [pos[0] * xMultiplier, pos[1] * 2] + ')';
+      })
+      .text(d => {
+        if (d.value > 0) {
+          return d.value;
+        }
+      })
+      .attr('font-size', 12);
+
+
+    // adds polylines to pie chart
+    vis.polyline
+    .join('polyline').attr('points', d => {
+      const pos = vis.expandedSegments.centroid(d);
+      const midAngle = vis.midAngle(d);
+      // only create a polyline if the value is greater than 0
+      if (midAngle > 0) {
+        pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
+        return [
+          vis.segments.centroid(d).map(n => n * 2),
+          vis.expandedSegments.centroid(d).map(n => n * 2),
+          [pos[0] * 1.5, pos[1] * 2],
+        ];
+      }
+    });
   }
 
   // Need to tween since built in interpolation does not work here
