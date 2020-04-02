@@ -11,3 +11,10 @@
 text {
   font-family: Georgia, Times, "Times New Roman", serif;
 }
+
+polyline {
+  opacity: .3;
+  stroke: black;
+  stroke-width: 2px;
+  fill: none;
+}

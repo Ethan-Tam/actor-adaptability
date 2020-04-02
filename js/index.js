@@ -72,8 +72,10 @@ Promise.all([
 
 // Hover callback functions
 let hovered = null;
+
 const hoverSlice = slice => {
   piechart.hoveredSlice = slice;
+  piechart.hoveredGenre = slice == null ? null : slice.data.genre;
   piechart.saveLastAngles();
   piechart.render();
 };
@@ -86,6 +88,23 @@ const hover = s => {
 // Click callback function
 let selectedActor = null;
 let selectedGenre = null;
+
+const selectSlice = s => {
+  if (s === null) {
+    selectedActor = null;
+    selectedGenre = null
+  } else {
+    selectedGenre = s.data.genre == selectedGenre ? null : s.data.genre;
+  }
+  network.selectedGenre = selectedGenre;
+  network.render();
+  piechart.selectedGenre = selectedGenre;
+  piechart.saveLastAngles();
+  piechart.update();
+  barchart.selectedGenre = selectedGenre;
+  barchart.update();
+}
+
 const select = s => {
   if (s === null) {
     selectedActor = null;
@@ -99,10 +118,12 @@ const select = s => {
       selectedGenre = null;
     }
   }
+
   network.selectedActor = selectedActor;
   network.selectedGenre = selectedGenre;
-  piechart.selected = selectedActor;
+  piechart.selectedActor = selectedActor;
   network.render();
+  piechart.selectedGenre = selectedGenre;
   piechart.saveLastAngles();
   piechart.update();
   barchart.selectedActor = selectedActor;
@@ -157,6 +178,27 @@ const initializeNetwork = () => {
   network.transitionTime = transitionTime;
 
   network.initVis();
+};
+
+// Initialize pie chart view
+const initializePieChart = () => {
+  piechart = new PieChart({
+    parentElement: '#pie-chart',
+    containerWidth: 400,
+    containerHeight: 400,
+  });
+
+  piechart.initialData = topGenres;
+  piechart.colourScale = colourScale;
+  piechart.genres = genres;
+  piechart.genreMap = genreMap;
+  piechart.fullOpacity = fullOpacity;
+  piechart.fadeOpacity = fadeOpacity;
+  piechart.transitionTime = transitionTime;
+  piechart.hover = hoverSlice;
+  piechart.select = selectSlice;
+
+  piechart.initVis();
 };
 
 // Initialize bar chart view
@@ -235,24 +277,4 @@ const initializeBarchart = data => {
   barchart.transitionTime = transitionTime;
 
   barchart.initVis();
-};
-
-// Initialize pie chart view
-const initializePieChart = () => {
-  piechart = new PieChart({
-    parentElement: '#pie-chart',
-    containerWidth: 400,
-    containerHeight: 400,
-  });
-
-  piechart.initialData = topGenres;
-  piechart.colourScale = colourScale;
-  piechart.genres = genres;
-  piechart.genreMap = genreMap;
-  piechart.fullOpacity = fullOpacity;
-  piechart.fadeOpacity = fadeOpacity;
-  piechart.transitionTime = transitionTime;
-  piechart.hover = hoverSlice;
-
-  piechart.initVis();
 };
