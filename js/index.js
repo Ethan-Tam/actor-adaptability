@@ -72,8 +72,10 @@ Promise.all([
 
 // Hover callback functions
 let hovered = null;
+
 const hoverSlice = slice => {
   piechart.hoveredSlice = slice;
+  piechart.hoveredGenre = slice == null ? null : slice.data.genre;
   piechart.saveLastAngles();
   piechart.render();
 };
@@ -89,7 +91,6 @@ let selectedGenre = null;
 
 const selectSlice = s => {
   if (s === null) {
-    console.log('clicked')
     selectedActor = null;
     selectedGenre = null
   } else {

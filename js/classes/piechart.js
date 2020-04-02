@@ -188,7 +188,7 @@ class PieChart {
     // select/hover effects on the pie chart
     vis.slices
       .attr('stroke', 'black')
-      .attr('stroke-width', d => (d == vis.hoveredSlice ? 2 : 0))
+      .attr('stroke-width', d => (d.data.genre == vis.hoveredGenre? 1 : 0))
       .attr('opacity', d => {
         if (vis.selectedGenre == null || d.data.genre == vis.selectedGenre) {
           return vis.fullOpacity;
@@ -198,7 +198,7 @@ class PieChart {
       .transition()
       .duration(vis.transitionTime)
       .attrTween('d', d => {
-        if (d == vis.hoveredSlice) {
+        if (d.data.genre == vis.hoveredGenre) {
           return vis.arcTween(vis.expandedSegments)(d);
         }
         return vis.arcTween(vis.segments)(d);
