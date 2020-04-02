@@ -23,7 +23,7 @@ class PieChart {
 
     vis.midAngle = d => {
       if (d.endAngle == d.startAngle) {
-        return 0
+        return 0;
       }
       return d.startAngle + (d.endAngle - d.startAngle) / 2;
     };
@@ -52,9 +52,10 @@ class PieChart {
           .containerHeight / 2})`,
       );
 
-    vis.chart.append('g').attr('class', 'slices');
-    vis.chart.append('g').attr('class', 'labels');
+    // initialize svg group elements
+    vis.chart.append('g').attr('class', 'label');
     vis.chart.append('g').attr('class', 'lines');
+    vis.chart.append('g').attr('class', 'title');
 
     // Initialize previous angles all to zero
     vis.lastAngles = {};
@@ -100,7 +101,7 @@ class PieChart {
       .data(vis.data)
       .join('polyline')
       .attr('points', d => {
-        let pos = vis.expandedSegments.centroid(d);
+        const pos = vis.expandedSegments.centroid(d);
         const midAngle = vis.midAngle(d);
         // only create a polyline if the value is greater than 0
         if (midAngle > 0) {
@@ -108,22 +109,29 @@ class PieChart {
           return [
             vis.segments.centroid(d).map(n => n * 2),
             vis.expandedSegments.centroid(d).map(n => n * 2),
-            pos.map(n => n * 2),
+            [pos[0] * 1.5, pos[1] * 2],
           ];
         }
       });
-  
-    vis.labels = vis.chart.selectAll('text').data(vis.data);
+
+    vis.labels = vis.chart
+      .select('.label')
+      .selectAll('text')
+      .data(vis.data);
     vis.labels
       .join('text')
-      .attr('transform', function(d) {
-        return 'translate(' + vis.segments.centroid(d) + ')';
+      .attr('transform', d => {
+        const pos = vis.expandedSegments.centroid(d);
+        pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
+        const xMultiplier = pos[0] > 0 ? 1.55 : 1.75;
+        return 'translate(' + [pos[0] * xMultiplier, pos[1] * 2] + ')';
       })
       .text(d => {
         if (d.value > 0) {
           return d.value;
         }
-      });
+      })
+      .attr('font-size', 12);
 
     vis.render();
   }
@@ -132,12 +140,13 @@ class PieChart {
     let vis = this;
 
     // Adds title to piechart
-    // vis.chart
-    //   .selectAll('text')
-    //   .data(vis.data, d => d.data.genre)
-    //   .join('text')
-    //   .text(vis.title)
-    //   .attr('transform', `translate(${-vis.title.length * 4},${-130})`);
+    vis.chart
+      .select('.title')
+      .selectAll('text')
+      .data(vis.data, d => d.data.genre)
+      .join('text')
+      .text(vis.title)
+      .attr('transform', `translate(${-vis.title.length * 4},${-130})`);
 
     vis.slices = vis.chart
       .selectAll('path')
