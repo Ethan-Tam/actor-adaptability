@@ -86,10 +86,15 @@ const hover = s => {
 // Click callback function
 let selectedActor = null;
 let selectedGenre = null;
-let selectedSlice = null;
 
 const selectSlice = s => {
-  selectedGenre = s.data.genre
+  if (s === null) {
+    console.log('clicked')
+    selectedActor = null;
+    selectedGenre = null
+  } else {
+    selectedGenre = s.data.genre == selectedGenre ? null : s.data.genre;
+  }
   network.selectedGenre = selectedGenre;
   network.render();
   piechart.selectedGenre = selectedGenre;
@@ -112,12 +117,10 @@ const select = s => {
       selectedGenre = null;
     }
   }
-  let selectedSlice = null
 
   network.selectedActor = selectedActor;
   network.selectedGenre = selectedGenre;
   piechart.selectedActor = selectedActor;
-  piechart.selectedSlice = selectedSlice;
   network.render();
   piechart.selectedGenre = selectedGenre;
   piechart.saveLastAngles();
