@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>436V Project</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div id="vis" class="row">
         <div class="column">
@@ -12,7 +14,12 @@
             </svg>
         </div>
         <div class="column">
-            <div><svg id="pie-chart" width="400" height="400"></svg></div>
+            <div><svg id="pie-chart" width="400" height="400"></svg>
+                <div id="radio-selector" class="radio-button-container">
+                    <input class="radio-button" type="radio" name="data" value="count" checked> Count </input>
+                    <input class="radio-button" type="radio" name="data" value="count"> Percentage </input>
+                </div>
+            </div>
             <div><svg id="stacked-bar-chart" width="400" height="400"></svg></div>
         </div>
     </div>
@@ -24,4 +31,5 @@
     <script src="js/process_data.js"></script>
     <script src="js/index.js"></script>
 </body>
+
 </html>
