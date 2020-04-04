@@ -178,6 +178,15 @@ const initializeNetwork = () => {
   network.transitionTime = transitionTime;
 
   network.initVis();
+
+  $(function () {
+    let actorNames = actorToGenre.map((d) => {
+      return d.actor;
+    });
+    $('#actor-search').autocomplete({
+      source: actorNames,
+    });
+  });
 };
 
 // Initialize pie chart view
