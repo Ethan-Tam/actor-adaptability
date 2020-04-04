@@ -205,7 +205,7 @@ const initializePieChart = () => {
   $('#radio-selector').on('change', () => {
     dataType = $("input[name='data']:checked").val();
     piechart.dataType = dataType;
-    piechart.update();
+    piechart.render();
   });
 };
 
