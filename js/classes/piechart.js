@@ -135,7 +135,13 @@ class PieChart {
       })
       .text(d => {
         if (d.value > 0) {
-          return d.value;
+          if (vis.dataType == 'count') {
+            return d.value;
+          } else {
+            const radians = d.endAngle - d.startAngle;
+            const percentage = radians / (2 * Math.PI) * 100
+            return percentage.toFixed(0) + '%'
+          }
         }
       })
       .attr('font-size', 12);

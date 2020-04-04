@@ -29,8 +29,8 @@ Promise.all([
   d3.json('data/actor-to-genres.json'),
   d3.json('data/genre-to-actors.json'),
   d3.json('data/actor-links.json'),
-  d3.json('data/actor-to-year-genres.json')
-]).then(files => {
+  d3.json('data/actor-to-year-genres.json'),
+]).then((files) => {
   moveData = files[0];
   actorToGenre = files[1];
   genreToActor = files[2];
@@ -40,18 +40,18 @@ Promise.all([
   // Compute "Other" category
   topGenres = genreToActor.slice(0, numGenres - 1);
   let other = [];
-  genreToActor.slice(numGenres - 1, genreToActor.length).forEach(d => {
+  genreToActor.slice(numGenres - 1, genreToActor.length).forEach((d) => {
     other.push(...d.actors);
   });
   other = Array.from(new Set(other));
   topGenres.push({ genre: 'Other', actors: other });
 
-  genres = topGenres.map(g => g.genre);
-  actorToGenre.forEach(d => {
+  genres = topGenres.map((g) => g.genre);
+  actorToGenre.forEach((d) => {
     let otherCount = d.genres
-      .filter(g => !genres.includes(g.genre))
+      .filter((g) => !genres.includes(g.genre))
       .reduce((acc, cv) => acc + cv.count, 0);
-    d.genres = d.genres.filter(g => genres.includes(g.genre));
+    d.genres = d.genres.filter((g) => genres.includes(g.genre));
     if (otherCount > 0) d.genres.push({ genre: 'Other', count: otherCount });
   });
 
@@ -73,14 +73,14 @@ Promise.all([
 // Hover callback functions
 let hovered = null;
 
-const hoverSlice = slice => {
+const hoverSlice = (slice) => {
   piechart.hoveredSlice = slice;
   piechart.hoveredGenre = slice == null ? null : slice.data.genre;
   piechart.saveLastAngles();
   piechart.render();
 };
 
-const hover = s => {
+const hover = (s) => {
   network.hovered = s;
   network.render();
 };
@@ -89,10 +89,10 @@ const hover = s => {
 let selectedActor = null;
 let selectedGenre = null;
 
-const selectSlice = s => {
+const selectSlice = (s) => {
   if (s === null) {
     selectedActor = null;
-    selectedGenre = null
+    selectedGenre = null;
   } else {
     selectedGenre = s.data.genre == selectedGenre ? null : s.data.genre;
   }
@@ -103,9 +103,9 @@ const selectSlice = s => {
   piechart.update();
   barchart.selectedGenre = selectedGenre;
   barchart.update();
-}
+};
 
-const select = s => {
+const select = (s) => {
   if (s === null) {
     selectedActor = null;
     selectedGenre = null;
@@ -134,8 +134,8 @@ const select = s => {
 // Count common elements
 const countDuplicates = (l1, l2) => {
   let count = 0;
-  l1.forEach(ai => {
-    l2.forEach(aj => {
+  l1.forEach((ai) => {
+    l2.forEach((aj) => {
       if (ai === aj) count++;
     });
   });
@@ -147,9 +147,9 @@ const initializeNetwork = () => {
   // Make matrix for chord diaram ring
   let matrix = [];
   let keys = d3.range(numGenres);
-  keys.forEach(i => {
+  keys.forEach((i) => {
     let row = [];
-    keys.forEach(j => {
+    keys.forEach((j) => {
       if (j === i) row.push(0);
       else row.push(countDuplicates(topGenres[i].actors, topGenres[j].actors));
     });
@@ -197,23 +197,31 @@ const initializePieChart = () => {
   piechart.transitionTime = transitionTime;
   piechart.hover = hoverSlice;
   piechart.select = selectSlice;
+  piechart.dataType = 'count';
 
   piechart.initVis();
+
+  // radio button events
+  $('#radio-selector').on('change', () => {
+    dataType = $("input[name='data']:checked").val();
+    piechart.dataType = dataType;
+    piechart.update();
+  });
 };
 
 // Initialize bar chart view
-const initializeBarchart = data => {
+const initializeBarchart = (data) => {
   barchart = new stackedBarChart({
     parentElement: '#stacked-bar-chart',
     containerWidth: 400,
-    containerHeight: 400
+    containerHeight: 400,
   });
 
   // Compute other stuff
   topGenresObj = genreToActor.slice(0, numGenres - 1);
-  topGenres = []
+  topGenres = [];
   topGenresObj.forEach((genreObj) => {
-    topGenres.push(genreObj["genre"])
+    topGenres.push(genreObj['genre']);
   });
 
   // go through actor-to-genre-year, eliminate nontop genres, add "other" genre
@@ -225,42 +233,53 @@ const initializeBarchart = data => {
       topGenres.forEach((genre) => {
         if (!yearObj.hasOwnProperty(genre)) {
           // if yearObj doesn't have one of the top genres, add it with count = 0
-          yearObj[genre] = 0
+          yearObj[genre] = 0;
         }
       });
       // go through each key that isn't year, if it's not in topGenres, add count to an "other" key
-      otherCount = 0
+      otherCount = 0;
       Object.keys(yearObj).forEach((key) => {
-        if (key !== "year" && !topGenres.includes(key)) {
-          otherCount += yearObj[key]
+        if (key !== 'year' && !topGenres.includes(key)) {
+          otherCount += yearObj[key];
           // get rid of the nontop genre key value pair
-          delete yearObj[key]
+          delete yearObj[key];
         }
       });
       // add the "Other" genre with the count of all the nontop genres
-      yearObj["Other"] = otherCount
+      yearObj['Other'] = otherCount;
     });
   });
 
   // add "Other" to top genres
-  topGenres.push("Other")
+  topGenres.push('Other');
 
   // create top genre data from "all" data
   topGenres.forEach((genre) => {
-    actorYearGenres[genre] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
-                                  {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
+    actorYearGenres[genre] = [
+      { year: 2006 },
+      { year: 2007 },
+      { year: 2008 },
+      { year: 2009 },
+      { year: 2010 },
+      { year: 2011 },
+      { year: 2012 },
+      { year: 2013 },
+      { year: 2014 },
+      { year: 2015 },
+      { year: 2016 },
+    ];
   });
 
   // fill in the counts for each genre entity
-  actorYearGenres["all"].forEach((yearObj, index) => {
+  actorYearGenres['all'].forEach((yearObj, index) => {
     Object.entries(yearObj).forEach(([genre, count]) => {
-      if (genre !== "year") {
+      if (genre !== 'year') {
         // fill in genre with its count
-        actorYearGenres[genre][index][genre] = count
+        actorYearGenres[genre][index][genre] = count;
         // fill in all other genres with count = 0
         topGenres.forEach((genre2) => {
           if (genre2 !== genre) {
-            actorYearGenres[genre][index][genre2] = 0
+            actorYearGenres[genre][index][genre2] = 0;
           }
         });
       }
@@ -268,7 +287,7 @@ const initializeBarchart = data => {
   });
 
   // finally, add a "columns" property to data with the top genres
-  actorYearGenres["columns"] = topGenres
+  actorYearGenres['columns'] = topGenres;
 
   barchart.data = actorYearGenres;
   barchart.colourScale = colourScale;
