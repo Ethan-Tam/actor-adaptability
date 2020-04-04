@@ -13,8 +13,21 @@ text {
 }
 
 polyline {
-  opacity: .3;
+  opacity: 0.3;
   stroke: black;
   stroke-width: 2px;
   fill: none;
+}
+
+.radio-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20%;
+  margin-top: -15%;
+}
+
+.radio-button {
+  margin-left: 24px;
+  margin-right: 6px;
 }

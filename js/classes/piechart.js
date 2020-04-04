@@ -22,17 +22,14 @@ class PieChart {
     let vis = this;
 
     // calculates the midpoint of the slice
-    vis.midAngle = d => {
+    vis.midAngle = (d) => {
       if (d.endAngle == d.startAngle) {
         return 0;
       }
       return d.startAngle + (d.endAngle - d.startAngle) / 2;
     };
 
-    vis.segments = d3
-      .arc()
-      .innerRadius(0)
-      .outerRadius(100);
+    vis.segments = d3.arc().innerRadius(0).outerRadius(100);
 
     vis.expandedSegments = d3
       .arc()
@@ -49,8 +46,9 @@ class PieChart {
       .append('g')
       .attr(
         'transform',
-        `translate(${vis.config.containerWidth / 2},${vis.config
-          .containerHeight / 2})`,
+        `translate(${vis.config.containerWidth / 2},${
+          vis.config.containerHeight / 2
+        })`,
       );
 
     // Set up background for click off events
@@ -66,8 +64,9 @@ class PieChart {
       .attr('height', vis.height)
       .attr(
         'transform',
-        `translate(${- vis.config.containerWidth / 2},${-vis.config
-          .containerHeight / 2})`,
+        `translate(${-vis.config.containerWidth / 2},${
+          -vis.config.containerHeight / 2
+        })`,
       )
       .on('click', () => vis.select(null));
 
@@ -78,7 +77,7 @@ class PieChart {
 
     // Initialize previous angles all to zero
     vis.lastAngles = {};
-    vis.genres.forEach(d => {
+    vis.genres.forEach((d) => {
       vis.lastAngles[d] = { startAngle: 0, endAngle: 0 };
     });
 
@@ -90,7 +89,7 @@ class PieChart {
     if (vis.selectedActor == null) {
       vis.data = d3
         .pie()
-        .value(d => d.actors.length)
+        .value((d) => d.actors.length)
         .sort(null)(vis.initialData);
       vis.title = 'All Actors';
     } else {
@@ -98,16 +97,16 @@ class PieChart {
       let genreData = [...vis.selectedActor.genres];
       genreData.push(
         ...vis.genres
-          .filter(d => {
-            return !vis.selectedActor.genres.map(g => g.genre).includes(d);
+          .filter((d) => {
+            return !vis.selectedActor.genres.map((g) => g.genre).includes(d);
           })
-          .map(d => {
+          .map((d) => {
             return { genre: d, count: 0 };
           }),
       );
       vis.data = d3
         .pie()
-        .value(d => d.count)
+        .value((d) => d.count)
         .sort((a, b) => vis.genreMap[a.genre] - vis.genreMap[b.genre])(
         genreData,
       );
@@ -122,34 +121,25 @@ class PieChart {
     vis.labels = vis.chart
       .select('.label')
       .selectAll('text')
-      .data(vis.data);
-
-    // adds data labels to pie chart
-    vis.labels
+      .data(vis.data)
       .join('text')
-      .attr('transform', d => {
+      .attr('transform', (d) => {
         const pos = vis.expandedSegments.centroid(d);
         pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
         const xMultiplier = pos[0] > 0 ? 1.55 : 1.75;
         return 'translate(' + [pos[0] * xMultiplier, pos[1] * 2] + ')';
-      })
-      .text(d => {
-        if (d.value > 0) {
-          return d.value;
-        }
-      })
-      .attr('font-size', 12);
+      });
 
     // adds polylines to pie chart
-    vis.polyline.join('polyline').attr('points', d => {
+    vis.polyline.join('polyline').attr('points', (d) => {
       const pos = vis.expandedSegments.centroid(d);
       const midAngle = vis.midAngle(d);
       // only create a polyline if the value is greater than 0
       if (midAngle > 0) {
         pos[0] = 100 * (vis.midAngle(d) < Math.PI ? 1 : -1);
         return [
-          vis.segments.centroid(d).map(n => n * 2),
-          vis.expandedSegments.centroid(d).map(n => n * 2),
+          vis.segments.centroid(d).map((n) => n * 2),
+          vis.expandedSegments.centroid(d).map((n) => n * 2),
           [pos[0] * 1.5, pos[1] * 2],
         ];
       }
@@ -165,20 +155,20 @@ class PieChart {
     vis.chart
       .select('.title')
       .selectAll('text')
-      .data(vis.data, d => d.data.genre)
+      .data(vis.data, (d) => d.data.genre)
       .join('text')
       .text(vis.title)
       .attr('transform', `translate(${-vis.title.length * 4},${-130})`);
 
     vis.slices = vis.chart
       .selectAll('path')
-      .data(vis.data, d => d.data.genre)
+      .data(vis.data, (d) => d.data.genre)
       .join('path')
-      .attr('fill', d => vis.colourScale(d.data.genre))
-      .on('click', d => {
+      .attr('fill', (d) => vis.colourScale(d.data.genre))
+      .on('click', (d) => {
         vis.select(d);
       })
-      .on('mouseover', d => {
+      .on('mouseover', (d) => {
         vis.hover(d);
       })
       .on('mouseout', () => {
@@ -188,8 +178,8 @@ class PieChart {
     // select/hover effects on the pie chart
     vis.slices
       .attr('stroke', 'black')
-      .attr('stroke-width', d => (d.data.genre == vis.hoveredGenre? 1 : 0))
-      .attr('opacity', d => {
+      .attr('stroke-width', (d) => (d.data.genre == vis.hoveredGenre ? 1 : 0))
+      .attr('opacity', (d) => {
         if (vis.selectedGenre == null || d.data.genre == vis.selectedGenre) {
           return vis.fullOpacity;
         }
@@ -197,17 +187,31 @@ class PieChart {
       })
       .transition()
       .duration(vis.transitionTime)
-      .attrTween('d', d => {
+      .attrTween('d', (d) => {
         if (d.data.genre == vis.hoveredGenre) {
           return vis.arcTween(vis.expandedSegments)(d);
         }
         return vis.arcTween(vis.segments)(d);
       });
+
+    vis.labels
+      .text((d) => {
+        if (d.value > 0) {
+          if (vis.dataType == 'count') {
+            return d.value;
+          } else {
+            const radians = d.endAngle - d.startAngle;
+            const percentage = (radians / (2 * Math.PI)) * 100;
+            return percentage.toFixed(0) + '%';
+          }
+        }
+      })
+      .attr('font-size', 12);
   }
 
   // Need to tween since built in interpolation does not work here
   arcTween(arc) {
-    return d => {
+    return (d) => {
       let vis = this;
       let interpolateStart = d3.interpolate(
         vis.lastAngles[d.data.genre].startAngle,
@@ -217,7 +221,7 @@ class PieChart {
         vis.lastAngles[d.data.genre].endAngle,
         d.endAngle,
       );
-      return t => {
+      return (t) => {
         d.startAngle = interpolateStart(t);
         d.endAngle = interpolateEnd(t);
         return arc(d);
@@ -228,7 +232,7 @@ class PieChart {
   // Store the previous angles for smooth transitions
   saveLastAngles() {
     let vis = this;
-    vis.data.forEach(d => {
+    vis.data.forEach((d) => {
       vis.lastAngles[d.data.genre] = {
         startAngle: d.startAngle,
         endAngle: d.endAngle,
