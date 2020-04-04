@@ -106,7 +106,7 @@ class Network {
        .selectAll('g.arc')
        .data(d => d.groups, d => vis.genres[d.index])
       .join('g')
-        .attr('class', 'arc')
+        .attr('class', 'arc selectable')
       .append('path')
         .attr('id', d => 'group' + d.index)
         .attr('fill', d => vis.colourScale(vis.genres[d.index]))
@@ -118,7 +118,7 @@ class Network {
         .attr('stroke-width', 0)
         .on('click', d => vis.select(vis.genres[d.index]))
         .on('mouseover', d => vis.hover(vis.genres[d.index]))
-        .on('mouseout', d => vis.hover(null));
+        .on('mouseout', () => vis.hover(null));
 
     // Draw arc labels
     vis.labels = vis.chart
@@ -142,7 +142,7 @@ class Network {
     vis.nodeCircles = vis.nodeCircles
           .data(vis.nodes, d => d.actor)
         .join('circle')
-          .attr('class', 'node')
+          .attr('class', 'node selectable')
           .attr('cx', d => d.pos.x)
           .attr('cy', d => d.pos.y)
           .attr('r', d => vis.radiusScale(vis.getNumMovies(d)))

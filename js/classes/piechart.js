@@ -164,6 +164,7 @@ class PieChart {
       .selectAll('path')
       .data(vis.data, (d) => d.data.genre)
       .join('path')
+      .attr('class', 'slice selectable')
       .attr('fill', (d) => vis.colourScale(d.data.genre))
       .on('click', (d) => {
         vis.select(d);

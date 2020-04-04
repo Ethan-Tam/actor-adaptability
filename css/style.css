@@ -34,6 +34,7 @@ input[type='submit'] {
   border: 0;
   border-radius: 4px;
   margin-left: 2%;
+  cursor: pointer;
 }
 
 ul {
@@ -79,4 +80,8 @@ polyline {
 .radio-button {
   margin-left: 24px;
   margin-right: 6px;
+}
+
+.selectable {
+  cursor: pointer;
 }
