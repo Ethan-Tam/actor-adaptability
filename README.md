@@ -6,6 +6,9 @@ External Code sources:
 - https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
 - http://bl.ocks.org/mbostock/5100636
 - https://observablehq.com/@ericd9799/learning-stacked-bar-chart-in-d3-js
+- https://www.w3schools.com/howto/howto_js_autocomplete.asp
+- https://howtodoinjava.com/jquery/jquery-detect-if-enter-key-is-pressed/
+
 
 ## Milestone 2 Write-Up
 
