@@ -9,13 +9,17 @@
 <body>
     <div id="vis" class="row">
         <div class="column">
+            <div class="search-bar-container static">
+                <input id="actor-search" class="actor-search-bar" type="text" name="searchActor" placeholder="Search">
+                <input id="actor-submit" type="submit">
+            </div>
             <svg id="network" width="800" height="800">
                 <text id="loading-text" x="400" y="400" font-weight="bold">Loading...</text>
             </svg>
         </div>
         <div class="column">
             <div><svg id="pie-chart" width="400" height="400"></svg>
-                <div id="radio-selector" class="radio-button-container">
+                <div id="radio-selector" class="radio-button-container static">
                     <input class="radio-button" type="radio" name="data" value="count" checked> Count </input>
                     <input class="radio-button" type="radio" name="data" value="percentage"> Percentage </input>
                 </div>
@@ -25,6 +29,8 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="js/classes/barchart.js"></script>
     <script src="js/classes/network.js"></script>
