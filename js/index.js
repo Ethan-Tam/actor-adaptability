@@ -61,6 +61,12 @@ Promise.all([
     genreMap[g] = i;
   });
 
+  // Creates actor map for search bar
+  actorMap = {};
+  actorToGenre.forEach((g) => {
+    actorMap[g.actor.toLowerCase()] = g;
+  });
+
   // Create colour scale
   colourScale = d3.scaleOrdinal(d3.schemeTableau10).domain(genres);
 
@@ -179,13 +185,30 @@ const initializeNetwork = () => {
 
   network.initVis();
 
-  $(function () {
+  // implements search bar functionality
+  $(() => {
+    // selects a node if the actor exists and it not already selected
+    const submitSearch = () => {
+      searchValue = $('#actor-search').val().toLowerCase();
+      if (searchValue.trim() in actorMap && selectedActor != actorMap[searchValue]) {
+        select(actorMap[searchValue]);
+      }
+    }
+    // creates an array of actor names used for autocomplete
     let actorNames = actorToGenre.map((d) => {
       return d.actor;
     });
     $('#actor-search').autocomplete({
       source: actorNames,
     });
+    $('#actor-submit').click(submitSearch);
+    // searches an actor if the enter button is pressed
+    $('#actor-search').keypress((event) => {
+      const keycode = event.keyCode ? event.keyCode : event.which;
+      if (keycode == '13') {
+        submitSearch()
+      }
+    })
   });
 };
 
