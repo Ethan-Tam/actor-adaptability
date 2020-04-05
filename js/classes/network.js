@@ -100,6 +100,8 @@ class Network {
 
     // Remove loading text
     d3.select('#loading-text').remove();
+    d3.selectAll('.search-bar-container').attr('class', 'search-bar-container');
+    d3.selectAll('.radio-button-container').attr('class', 'radio-button-container');
 
     // Draw arcs
     vis.arcs = vis.chart.datum(vis.chord)

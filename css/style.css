@@ -12,6 +12,11 @@ text {
   font-family: Georgia, Times, 'Times New Roman', serif;
 }
 
+/* hides HTML elements until svgs load */
+.static {
+  opacity: 0;
+}
+
 .search-bar-container {
   display: flex;
   align-items: center;
