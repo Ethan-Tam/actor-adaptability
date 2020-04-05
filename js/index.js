@@ -190,10 +190,13 @@ const initializeNetwork = () => {
     // selects a node if the actor exists and it not already selected
     const submitSearch = () => {
       searchValue = $('#actor-search').val().toLowerCase();
-      if (searchValue.trim() in actorMap && selectedActor != actorMap[searchValue]) {
+      if (
+        searchValue.trim() in actorMap &&
+        selectedActor != actorMap[searchValue]
+      ) {
         select(actorMap[searchValue]);
       }
-    }
+    };
     // creates an array of actor names used for autocomplete
     let actorNames = actorToGenre.map((d) => {
       return d.actor;
@@ -206,9 +209,9 @@ const initializeNetwork = () => {
     $('#actor-search').keypress((event) => {
       const keycode = event.keyCode ? event.keyCode : event.which;
       if (keycode == '13') {
-        submitSearch()
+        submitSearch();
       }
-    })
+    });
   });
 };
 
@@ -237,7 +240,7 @@ const initializePieChart = () => {
   $('#radio-selector').on('change', () => {
     dataType = $("input[name='data']:checked").val();
     piechart.dataType = dataType;
-    piechart.render();
+    piechart.renderLabels();
   });
 };
 

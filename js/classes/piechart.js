@@ -195,19 +195,7 @@ class PieChart {
         return vis.arcTween(vis.segments)(d);
       });
 
-    vis.labels
-      .text((d) => {
-        if (d.value > 0) {
-          if (vis.dataType == 'count') {
-            return d.value;
-          } else {
-            const radians = d.endAngle - d.startAngle;
-            const percentage = (radians / (2 * Math.PI)) * 100;
-            return percentage.toFixed(0) + '%';
-          }
-        }
-      })
-      .attr('font-size', 12);
+    vis.renderLabels();
   }
 
   // Need to tween since built in interpolation does not work here
@@ -239,5 +227,22 @@ class PieChart {
         endAngle: d.endAngle,
       };
     });
+  }
+
+  renderLabels() {
+    let vis = this;
+    vis.labels
+      .text((d) => {
+        if (d.value > 0) {
+          if (vis.dataType == 'count') {
+            return d.value;
+          } else {
+            const radians = d.endAngle - d.startAngle;
+            const percentage = (radians / (2 * Math.PI)) * 100;
+            return percentage.toFixed(0) + '%';
+          }
+        }
+      })
+      .attr('font-size', 12);
   }
 }
