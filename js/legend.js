@@ -14,8 +14,6 @@ const initializeLegend = () => {
   group.append('text')
       .attr('x', 30)
       .attr('y', 14)
-      .attr('font-size', '12px')
-      .attr('font-weight', 'normal')
       .text('actor has 1 movie in genre')
 
   group = parentSvg.append('g')
@@ -31,8 +29,6 @@ const initializeLegend = () => {
   group.append('text')
       .attr('x', 30)
       .attr('y', 14)
-      .attr('font-size', '12px')
-      .attr('font-weight', 'normal')
       .text('actor has 9 movies in genre')
 
   group = parentSvg.append('g')
@@ -45,8 +41,6 @@ const initializeLegend = () => {
   group.append('text')
       .attr('x', 30)
       .attr('y', 14)
-      .attr('font-size', '12px')
-      .attr('font-weight', 'normal')
       .text('actor has 1 movie total')
 
   group = parentSvg.append('g')
@@ -59,7 +53,5 @@ const initializeLegend = () => {
   group.append('text')
       .attr('x', 30)
       .attr('y', 14)
-      .attr('font-size', '12px')
-      .attr('font-weight', 'normal')
       .text('actor has 15 movies total')
 }
