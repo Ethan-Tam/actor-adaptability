@@ -7,12 +7,25 @@
 </head>
 
 <body>
+    <div class="row">
+        <div id="title" class="column">
+            Actor Adaptability
+        </div>
+        <div id="description" class="paragraph column">
+          When an audience watches a great movie, they become fully immersed in the story and connect with the characters an actor portrays. However, after watching the same actor play similar roles in multiple movies of the same genre, they start to associate certain actors with certain genres and don’t realize that the actor plays roles in different genres as well. To address this issue, this visualization aims to show the versatility of actors in popular movies from 2006-2016, by displaying the different types of genres they have acted in which may surprise many users and make them realize that actors can adapt to different genres.
+        </div>
+    </div>
     <div id="vis" class="row">
         <div class="column">
-            <div class="search-bar-container static">
-                <input id="actor-search" class="actor-search-bar" type="text" name="searchActor" placeholder="Search">
+            <div class="static heading">Find an Actor</div>
+            <div class="static search-bar-container" width="200" height="80">
+                <input id="actor-search" class="actor-search-bar" type="text" name="searchActor" placeholder="Search Actors">
                 <input id="actor-submit" type="submit">
             </div>
+            <div class="static heading">Legend</div>
+            <svg id="legend" width="200" height="700"></svg>
+        </div>
+        <div class="column">
             <svg id="network" width="800" height="800">
                 <text id="loading-text" x="400" y="400" font-weight="bold">Loading...</text>
             </svg>
@@ -36,6 +49,7 @@
     <script src="js/classes/network.js"></script>
     <script src="js/classes/piechart.js"></script>
     <script src="js/process_data.js"></script>
+    <script src="js/legend.js"></script>
     <script src="js/index.js"></script>
 </body>
 
