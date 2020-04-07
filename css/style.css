@@ -74,6 +74,7 @@ div {
 
 text {
 	font-family: Verdana, Geneva ,sans-serif;
+  font-size: 12px;
 }
 
 input[type='text'] {
