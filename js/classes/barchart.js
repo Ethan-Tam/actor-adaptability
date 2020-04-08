@@ -48,6 +48,7 @@ class stackedBarChart {
     vis.title = d3.select(vis.config.parentElement).append('text')
       .attr("x", vis.config.margin.left + (vis.width / 2))
       .attr("y", vis.config.margin.top - 10)
+      .attr('font-weight', 'bold')
       .attr("text-anchor", "middle")
       .text("Movies counts per year and their genres");
 

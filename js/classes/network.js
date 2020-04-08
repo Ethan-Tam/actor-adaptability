@@ -60,6 +60,7 @@ class Network {
         .attr('fill', 'black')
         .attr('x', 3)
         .attr('y', 15)
+        .attr('font-size', 12)
         .text('');
 
     // Create radius scale
