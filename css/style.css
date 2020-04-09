@@ -1,5 +1,5 @@
 #title {
-  font-size: 2.5em;
+  font-size: 40px;
   font-weight: bold;
   width: 300px;
   padding-top: 60px;
@@ -16,7 +16,7 @@
   border: solid;
   border-radius: 8px;
   margin-top: 36px;
-  padding: 0px 0px 10px 0px;
+  padding-bottom: 10px;
 }
 
 #legend {
@@ -28,7 +28,7 @@
 }
 
 .heading {
-  font-size: 1.5em;
+  font-size: 24px;
   font-weight: bold;
   padding-top: 20px;
   padding-bottom: 10px;
@@ -40,7 +40,6 @@
 }
 
 .paragraph {
-  display: block;
   width: 300px;
   word-wrap: break-word;
   overflow-wrap: break-word;
