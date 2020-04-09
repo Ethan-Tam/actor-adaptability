@@ -1,5 +1,5 @@
 // Uncomment the following line to reprocess data
-//processData();
+processData();
 
 // Data
 let movieData;
@@ -252,7 +252,7 @@ const initializeBarchart = (data) => {
     containerHeight: 400,
   });
 
-  // Compute other stuff
+  // Compute 'Other' stuff
   topGenresObj = genreToActor.slice(0, numGenres - 1);
   topGenres = [];
   topGenresObj.forEach((genreObj) => {

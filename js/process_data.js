@@ -4,22 +4,32 @@ const processData = () => {
   let actorToGenres = {};
   let actorToActor = {};
   let actorToYearGenre = {};
+  let actorToGenreCount = {};
   // initialize actorToYearGenre with "all" object
   actorToYearGenre["all"] = [{year: 2006},{year: 2007},{year: 2008},{year: 2009},{year: 2010},{year: 2011},
                                   {year: 2012},{year: 2013},{year: 2014},{year: 2015},{year: 2016}];
+  actorToGenreCount["all"] = makeGenreCountRow("All Genres");
 
   d3.csv('data/movie-data.csv').then(data => {
     // Parse data into separate dicts
     data.forEach(d => {
       // Get d's "main" genre
       g = d['Genre'].split(',')[0]
-      // Deal with actorToYearGenre array for "all"
       let index = +d['Year']-2006
+      // Deal with actorToYearGenre for "all"
       if (actorToYearGenre["all"][index].hasOwnProperty(g)) {
           actorToYearGenre["all"][index][g]++;
         } else {
           actorToYearGenre["all"][index][g] = 1;
         }
+      // Deal with actorToGenreCount for "all"
+      addOrIncrementSeriesValues(actorToGenreCount, index, g, "all");
+      // Deal with actorToGenreCount for genres
+      if (!(g in actorToGenreCount)) {
+          actorToGenreCount[g] = makeGenreCountRow(g);
+        }
+      addOrIncrementSeriesValues(actorToGenreCount, index, g, g);
+
       // Everything has to do with actors, so make them the outer loop
       d['Actors'].split(',').forEach(a => {
         // Trim the name to remove spaces before and after
@@ -77,6 +87,12 @@ const processData = () => {
         } else {
           actorToYearGenre[name][index][g] = 1;
         }
+
+        // Handle the actor to genre-count dict
+        if (!(name in actorToGenreCount)) {
+          actorToGenreCount[name] = makeGenreCountRow(name);
+        }
+        addOrIncrementSeriesValues(actorToGenreCount, index, g, name);
       });
     });
 
@@ -116,6 +132,28 @@ const processData = () => {
     // console.log(JSON.stringify(gToARows));
     // console.log(JSON.stringify(aToGRows));
     // console.log(JSON.stringify(aToARows));
-    console.log(actorToYearGenre);
+    // console.log(actorToYearGenre);
+    console.log(actorToGenreCount);
   });
+}
+
+function addOrIncrementSeriesValues(actorToGenreCount, yearIndex, g, entityName) {
+  let seriesIdx = actorToGenreCount[entityName]["series"].map(row => row["name"]).indexOf(g);
+  if (seriesIdx == -1) {
+    actorToGenreCount[entityName]["series"].push(makeSeriesRow(g, yearIndex));
+  } else {
+    actorToGenreCount[entityName]["series"][seriesIdx]["values"][yearIndex]++;
+  }
+}
+
+function makeGenreCountRow(entityName) {
+  return {y: entityName, 
+          series: [],
+          dates: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]};
+}
+
+function makeSeriesRow(genreName, yearIndex) {
+  let row = {name: genreName, values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+  row["values"][yearIndex] = 1;
+  return row;
 }
