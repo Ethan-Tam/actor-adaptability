@@ -5,7 +5,7 @@ class multiLineChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 400,
       containerHeight: _config.containerHeight || 400,
-      margin: _config.margin || { top: 30, bottom: 60, right: 20, left: 20 }
+      margin: _config.margin || { top: 30, bottom: 80, right: 20, left: 30 }
     }
   }
 

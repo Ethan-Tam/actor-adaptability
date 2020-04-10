@@ -15,33 +15,39 @@
             <div class="row">
                 <div id="description" class="paragraph column">
                   When an audience watches a great movie, they become fully immersed in the story and connect with the characters an actor portrays. However, after watching the same actor play similar roles in multiple movies of the same genre, they start to associate certain actors with certain genres and don't realize that the actor plays roles in different genres as well. To address this issue, this visualization aims to show the versatility of actors in popular movies from 2006-2016, by displaying the different types of genres they have acted in which may surprise many users and make them realize that actors can adapt to different genres.
-                </div>
-            </div>
-            <div class="row">
-                <div class="heading" width="300">Find an Actor</div>
-                <div class="search-bar-container" width="300" height="80">
-                    <input id="actor-search" class="actor-search-bar" type="text" name="searchActor" placeholder="Search Actors">
-                    <input id="actor-submit" type="submit">
-                </div>
-            </div>
-            <div class="row static" id="legend-container">
-                <div class="heading">Legend</div>
-                <svg id="legend" width="250" height="200"></svg>
+              </div>
+          </div>
+          <div class="row">
+            <div class="heading" width="300">Find an Actor</div>
+            <div class="search-bar-container" width="300" height="80">
+                <input id="actor-search" class="actor-search-bar" type="text" name="searchActor" placeholder="Search Actors">
+                <input id="actor-submit" type="submit">
             </div>
         </div>
-        <div class="column">
-            <svg id="network" width="800" height="800">
-                <text id="loading-text" x="400" y="400" font-weight="bold">Loading...</text>
-            </svg>
+        <div class="row static" id="legend-container">
+            <div class="heading">Legend</div>
+            <svg id="legend" width="250" height="200"></svg>
         </div>
-        <div class="column">
-            <div><svg id="pie-chart" width="400" height="400"></svg>
-                <div id="radio-selector" class="radio-button-container static">
-                    <input class="radio-button" type="radio" name="data" value="count" checked> Count </input>
-                    <input class="radio-button" type="radio" name="data" value="percentage"> Percentage </input>
-                </div>
+    </div>
+    <div class="column">
+        <svg id="network" width="800" height="800">
+            <text id="loading-text" x="400" y="400" font-weight="bold">Loading...</text>
+        </svg>
+    </div>
+    <div class="column">
+        <div><svg id="pie-chart" width="400" height="400"></svg>
+            <div id="radio-selector" class="radio-button-container static">
+                <input class="radio-button" type="radio" name="data" value="count" checked> Count </input>
+                <input class="radio-button" type="radio" name="data" value="percentage"> Percentage </input>
             </div>
-            <div><svg id="multi-line-chart" width="400" height="400"></svg></div>
+        </div>
+        <div>
+            <svg id="multi-line-chart" width="400" height="400"></svg>
+            <svg id="stacked-bar-chart" width="400" height="400" display="none"></svg>
+            <div id="line-bar-radio" class="radio-button-container static">
+                <input class="radio-button" type="radio" name="linebar" value="multi-line-chart" checked> Line Chart</input>
+                <input class="radio-button" type="radio" name="linebar" value="stacked-bar-chart"> Bar Chart </input>
+            </div>
         </div>
     </div>
 

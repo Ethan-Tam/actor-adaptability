@@ -5,7 +5,7 @@ class stackedBarChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 700,
-      margin: _config.margin || { top: 30, bottom: 60, right: 20, left: 100 }
+      margin: _config.margin || { top: 30, bottom: 80, right: 20, left: 30 }
     }
   }
 

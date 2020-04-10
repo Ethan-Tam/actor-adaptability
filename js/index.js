@@ -97,7 +97,7 @@ Promise.all([
   initializeLegend();
   initializeNetwork();
   initializePieChart();
-  // initializeBarChart();
+  initializeBarChart();
   initializeLineChart();
 });
 
@@ -134,6 +134,8 @@ const selectSlice = (s) => {
   piechart.update();
   linechart.selectedGenre = selectedGenre;
   linechart.update();
+  barchart.selectedGenre = selectedGenre;
+  barchart.update();
 };
 
 const select = (s) => {
@@ -160,6 +162,9 @@ const select = (s) => {
   linechart.selectedActor = selectedActor;
   linechart.selectedGenre = selectedGenre;
   linechart.update();
+  barchart.selectedActor = selectedActor;
+  barchart.selectedGenre = selectedGenre;
+  barchart.update();
 };
 
 // Count common elements
@@ -261,11 +266,17 @@ const initializePieChart = () => {
 
   piechart.initVis();
 
-  // radio button events
+  // pie chart radio button events
   $('#radio-selector').on('change', () => {
     dataType = $("input[name='data']:checked").val();
     piechart.dataType = dataType;
     piechart.renderLabels();
+  });
+
+  // bar/line chart radio button event
+  $('#line-bar-radio').on('change', () => {
+    $("#multi-line-chart").toggle();
+    $("#stacked-bar-chart").toggle();
   });
 };
 
