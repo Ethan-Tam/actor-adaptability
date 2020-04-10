@@ -1,5 +1,5 @@
 // Uncomment the following line to reprocess data
-processData();
+// processData();
 
 // Data
 let movieData;
@@ -7,12 +7,14 @@ let actorToGenre;
 let genreToActor;
 let actorLinks;
 let actorYearGenres;
+let actorToGenreCount;
 let genres;
 
 // Views
 let network;
 let piechart;
 let barchart;
+let linechart;
 
 // Constants
 let selectStrokeWidth = 1;
@@ -30,12 +32,14 @@ Promise.all([
   d3.json('data/genre-to-actors.json'),
   d3.json('data/actor-links.json'),
   d3.json('data/actor-to-year-genres.json'),
+  d3.json('data/actor-to-genre-count.json'),
 ]).then((files) => {
   moveData = files[0];
   actorToGenre = files[1];
   genreToActor = files[2];
   actorLinks = files[3];
   actorYearGenres = files[4];
+  actorToGenreCount = files[5];
 
   // Compute "Other" category
   topGenres = genreToActor.slice(0, numGenres - 1);
@@ -73,7 +77,8 @@ Promise.all([
   // Initialize views
   initializeNetwork();
   initializePieChart();
-  initializeBarchart();
+  // initializeBarChart();
+  initializeLineChart();
 });
 
 // Hover callback functions
@@ -107,8 +112,8 @@ const selectSlice = (s) => {
   piechart.selectedGenre = selectedGenre;
   piechart.saveLastAngles();
   piechart.update();
-  barchart.selectedGenre = selectedGenre;
-  barchart.update();
+  linechart.selectedGenre = selectedGenre;
+  linechart.update();
 };
 
 const select = (s) => {
@@ -132,9 +137,9 @@ const select = (s) => {
   piechart.selectedGenre = selectedGenre;
   piechart.saveLastAngles();
   piechart.update();
-  barchart.selectedActor = selectedActor;
-  barchart.selectedGenre = selectedGenre;
-  barchart.update();
+  linechart.selectedActor = selectedActor;
+  linechart.selectedGenre = selectedGenre;
+  linechart.update();
 };
 
 // Count common elements
@@ -245,7 +250,7 @@ const initializePieChart = () => {
 };
 
 // Initialize bar chart view
-const initializeBarchart = (data) => {
+const initializeBarChart = () => {
   barchart = new stackedBarChart({
     parentElement: '#stacked-bar-chart',
     containerWidth: 400,
@@ -332,3 +337,84 @@ const initializeBarchart = (data) => {
 
   barchart.initVis();
 };
+
+function getSeriesValues(entityName) {
+  return actorToGenreCount[entityName]["series"][0]["values"];
+}
+
+// Initialize line chart view
+const initializeLineChart = () => {
+  linechart = new multiLineChart({
+    parentElement: '#multi-line-chart',
+    containerWidth: 400,
+    containerHeight: 400,
+  });
+
+  // Compute 'Other' stuff
+  topGenresObj = genreToActor.slice(0, numGenres - 1);
+  topGenres = [];
+  topGenresObj.forEach((genreObj) => {
+    topGenres.push(genreObj['genre']);
+  });
+  nonTopGenresObj = genreToActor.slice(numGenres - 1);
+  nonTopGenres = []
+  nonTopGenresObj.forEach((genreObj) => {
+    nonTopGenres.push(genreObj['genre']);
+  });
+
+  // Add Other row to actorToGenreCount
+  actorToGenreCount["Other"] = {y: "Other", 
+                                series: [{name: "Other", values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}],
+                                dates: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]};
+  // go through each entity in actorToGenreCount, eliminate nontop genres and add to Other genre
+  // for each entity in array
+  Object.entries(actorToGenreCount).forEach(([entity, data]) => {
+    // Create "Other" genre entity from nontopgenre genre entities
+    if (nonTopGenres.includes(entity)) {
+      // add the genres values to the Other row values
+      let nonTopGenreSeriesValues = getSeriesValues(entity);
+      let otherSeriesValues = getSeriesValues("Other");
+      actorToGenreCount["Other"]["series"][0]["values"] = otherSeriesValues.map((num, idx) => {
+        return num + nonTopGenreSeriesValues[idx]
+      });
+      delete actorToGenreCount[entity];
+      return;
+    }
+    // make sure every entity has every top genre as a line
+    let currGenres = data["series"].map(line => line.name);
+    topGenres.forEach((genre) => {
+      if (!(currGenres.includes(genre))) {
+        data["series"].push({name: genre, values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]});
+      }
+    });
+
+    if (entity === "Other") {
+      return;
+    }
+
+    // add an "Others" series row to each entity's series
+    let otherRow = {name: "Other", values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+    // inside each line...
+    data["series"] = data["series"].filter((line, idx) => {
+      // check if line is not a top genre
+      if (nonTopGenres.includes(line["name"])) {
+        // sum its values to otherRow
+        otherRow["values"] = otherRow["values"].map((num, idx) => num + line["values"][idx]);
+        return false;
+      }
+      return true;
+    });
+    // add otherRow as a line to current entity
+    data["series"].push(otherRow);
+  });
+
+  linechart.data = actorToGenreCount;
+  linechart.colourScale = colourScale;
+  linechart.selectedActor = null;
+  linechart.selectedGenre = null;
+  linechart.transitionTime = transitionTime;
+
+  linechart.initVis();  
+};
+
+
