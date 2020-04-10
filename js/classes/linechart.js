@@ -85,6 +85,14 @@ class multiLineChart {
     // Update vis.entity
     vis.entity = selectedData
 
+    // Update circle data
+    vis.circleData = []
+    vis.entity.series.forEach((line, idx) => {
+      line["values"].forEach((val) => {
+        vis.circleData.push({name: line["name"], value: val});
+      });
+    });
+
     // Calculate vis.yScale from vis.entity
     vis.yScale = d3.scaleLinear()
       .domain([0, d3.max(vis.entity["series"], d => d3.max(d["values"]))]).nice()
@@ -102,7 +110,7 @@ class multiLineChart {
     // Define line
     vis.line = d3.line()
         .defined(d => !isNaN(d))
-        .x((d, i) => vis.xScale(vis.entity.dates[i]))
+        .x((d, i) => vis.xScale(vis.entity["dates"][i]))
         .y(d => vis.yScale(d))
 
     vis.render();
@@ -127,5 +135,15 @@ class multiLineChart {
         .transition().duration(vis.transitionTime)
           .attr("stroke", d => vis.colourScale(d["name"]))
           .attr("d", d => vis.line(d["values"]));
+
+    vis.chart.selectAll("circle.line")
+      .data(vis.circleData)
+      .join("circle")
+        .attr("class", "line")
+        .attr("r", 2)
+        .attr("stroke", d => vis.colourScale(d["name"]))
+        .attr("fill", "white")
+        .attr("cx", (d, i) => vis.xScale(vis.entity["dates"][i % 11]))
+        .attr("cy", d => vis.yScale(d["value"]));
   }
 }
