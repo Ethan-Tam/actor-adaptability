@@ -89,7 +89,7 @@ class PieChart {
     if (vis.selectedActor == null) {
       vis.data = d3
         .pie()
-        .value((d) => d.actors.length)
+        .value((d) => d.count)
         .sort(null)(vis.initialData);
       vis.title = 'All Actors';
     } else {

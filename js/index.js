@@ -9,6 +9,7 @@ let actorLinks;
 let actorYearGenres;
 let actorToGenreCount;
 let genres;
+let genreCountMap
 
 // Views
 let network;
@@ -34,7 +35,7 @@ Promise.all([
   d3.json('data/actor-to-year-genres.json'),
   d3.json('data/actor-to-genre-count.json'),
 ]).then((files) => {
-  moveData = files[0];
+  movieData = files[0];
   actorToGenre = files[1];
   genreToActor = files[2];
   actorLinks = files[3];
@@ -59,6 +60,24 @@ Promise.all([
     if (otherCount > 0) d.genres.push({ genre: 'Other', count: otherCount });
   });
 
+  let genreCount = {};
+  genres.forEach(d => {
+    genreCount[d] = 0;
+  })
+  // Creates a total movie genre count mapping
+  movieData.forEach(d => {
+    movieGenre = d.Genre.split(',')[0];
+    if (movieGenre in genreCount) {
+      genreCount[movieGenre] += 1;
+    } else {
+      genreCount.Other += 1;
+    }
+  });
+
+  // converts genreCount to an array of objects
+  genreCountMap = Object.entries(genreCount).map(([k, v]) => {
+    return { genre: k, count: v };
+  });
   // Create genre index map
   genreMap = {};
   genres.forEach((g, i) => {
@@ -229,7 +248,7 @@ const initializePieChart = () => {
     containerHeight: 400,
   });
 
-  piechart.initialData = topGenres;
+  piechart.initialData = genreCountMap;
   piechart.colourScale = colourScale;
   piechart.genres = genres;
   piechart.genreMap = genreMap;
