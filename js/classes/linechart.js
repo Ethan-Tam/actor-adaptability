@@ -140,7 +140,7 @@ class multiLineChart {
       .data(vis.circleData)
       .join("circle")
         .attr("class", "line")
-        .attr("r", 2)
+        .attr("r", d => d["value"] === 0 ? 0 : 2)
         .attr("fill", "white")
         .transition().duration(vis.transitionTime)
           .attr("stroke", d => vis.colourScale(d["name"]))
