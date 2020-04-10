@@ -23,13 +23,13 @@ class multiLineChart {
       .attr("transform", `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
     // Compute x-scale
-    vis.xScale = d3.scaleBand()
-      .domain([2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016])
-      .range([0, vis.width])
-      .padding(0.1);
+    vis.xScale = d3.scaleLinear()
+      .domain([2006, 2016])
+      .range([0, vis.width]);
 
     // Set vis.xAxis
-    vis.xAxis = d3.axisBottom(vis.xScale);
+    vis.xAxis = d3.axisBottom(vis.xScale)
+      .tickFormat(d3.format('d'));
 
     // Add x-axis
     vis.xAxisG = vis.chart.append("g")
@@ -118,9 +118,10 @@ class multiLineChart {
       .transition().duration(vis.transitionTime)
       .call(vis.yAxis);
 
-    vis.chart.selectAll("path")
+    vis.chart.selectAll("path.line")
       .data(vis.entity.series)
       .join("path")
+        .attr("class", "line")
         .attr("fill", "none")
         .attr("stroke", d => vis.colourScale(d["name"]))
         .attr("stroke-width", 1.5)
