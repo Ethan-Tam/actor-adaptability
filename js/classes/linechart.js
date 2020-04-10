@@ -74,16 +74,13 @@ class multiLineChart {
       // Deep clone array
       actorData = JSON.parse(JSON.stringify(actorData))
       // Make all genres in yearObj that are not vis.selectedGenre or "year" have 0 count
-      actorData.forEach((yearObj, idx) => {
-        Object.entries(yearObj).forEach(([genre, count]) => {
-          if (genre !== vis.selectedGenre && genre !== "year") {
-            actorData[idx][genre] = 0
-          }
-        });
-      });
+      actorData["series"].forEach((line) => {
+        if (line["name"] !== vis.selectedGenre) {
+          line["values"] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+      })
       selectedData = actorData
     }
-    console.log(selectedData)
 
     // Update vis.entity
     vis.entity = selectedData
