@@ -141,9 +141,10 @@ class multiLineChart {
       .join("circle")
         .attr("class", "line")
         .attr("r", 2)
-        .attr("stroke", d => vis.colourScale(d["name"]))
         .attr("fill", "white")
-        .attr("cx", (d, i) => vis.xScale(vis.entity["dates"][i % 11]))
-        .attr("cy", d => vis.yScale(d["value"]));
+        .transition().duration(vis.transitionTime)
+          .attr("stroke", d => vis.colourScale(d["name"]))
+          .attr("cx", (d, i) => vis.xScale(vis.entity["dates"][i % 11]))
+          .attr("cy", d => vis.yScale(d["value"]));
   }
 }
