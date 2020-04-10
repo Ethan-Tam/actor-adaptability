@@ -49,18 +49,18 @@ class Network {
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', 0)
-        .attr('height', 18);
+        .attr('height', 20);
     vis.tr = vis.tg.append('rect')
         .attr('fill', 'white')
         .attr('x', 1)
         .attr('y', 1)
         .attr('width', 0)
-        .attr('height', 16);
+        .attr('height', 18);
     vis.tt = vis.tg.append('text')
         .attr('fill', 'black')
         .attr('x', 3)
         .attr('y', 15)
-        .attr('font-size', 14)
+        .attr('font-size', 12)
         .text('');
 
     // Create radius scale
@@ -98,10 +98,9 @@ class Network {
       vis.genrePos[g] = { x: x, y: y };
     });
 
-    // Remove loading text
+    // Remove loading text and show hidden things
     d3.select('#loading-text').remove();
-    d3.selectAll('.search-bar-container').attr('class', 'search-bar-container');
-    d3.selectAll('.radio-button-container').attr('class', 'radio-button-container');
+    d3.selectAll('.static').classed('static', false);
 
     // Draw arcs
     vis.arcs = vis.chart.datum(vis.chord)
@@ -280,7 +279,8 @@ class Network {
 
     let innerWidth = vis.tt.node().getBBox().width;
     let x = Math.min(vis.width - innerWidth - 12, vis.centreX + d.pos.x)
-    vis.tg.attr('transform', `translate(${x},${vis.centreY + d.pos.y - 24})`);
+    let y = vis.centreY + d.pos.y - 24;
+    vis.tg.attr('transform', `translate(${x},${y})`);
 
     vis.tb.attr('width', Math.ceil(innerWidth) + 6);
     vis.tr.attr('width', Math.ceil(innerWidth) + 4);

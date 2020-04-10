@@ -1,15 +1,58 @@
+#title {
+  font-size: 40px;
+  font-weight: bold;
+  width: 300px;
+  padding-top: 60px;
+  padding-bottom: 26px;
+  text-align: center;
+}
+
+#description {
+  font-size: 12px;
+  padding-bottom: 6px;
+}
+
+#legend-container {
+  border: solid;
+  border-radius: 8px;
+  margin-top: 36px;
+  padding-bottom: 10px;
+}
+
+#legend {
+  margin-left: 30px;
+}
+
+.left {
+  padding-left: 120px;
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: bold;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.search-bar-container {
+  margin-right: 20px;
+}
+
+.paragraph {
+  width: 300px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .column {
   float: left;
 }
 
-.row:after {
+.row {
   content: '';
   display: table;
   clear: both;
-}
-
-text {
-  font-family: Georgia, Times, 'Times New Roman', serif;
 }
 
 /* hides HTML elements until svgs load */
@@ -21,6 +64,36 @@ text {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.radio-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20%;
+  margin-top: -15%;
+}
+
+.radio-button {
+  margin-left: 24px;
+  margin-right: 6px;
+}
+
+.selectable {
+  cursor: pointer;
+}
+
+/* removes unnessessary div from autocomplete */
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+div {
+	font-family: Verdana, Geneva ,sans-serif;
+}
+
+text {
+	font-family: Verdana, Geneva ,sans-serif;
 }
 
 input[type='text'] {
@@ -72,26 +145,4 @@ polyline {
   stroke: black;
   stroke-width: 2px;
   fill: none;
-}
-
-.radio-button-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20%;
-  margin-top: -15%;
-}
-
-.radio-button {
-  margin-left: 24px;
-  margin-right: 6px;
-}
-
-.selectable {
-  cursor: pointer;
-}
-
-/* removes unnessessary div from autocomplete */
-.ui-helper-hidden-accessible {
-  display: none;
 }

@@ -75,6 +75,7 @@ Promise.all([
   colourScale = d3.scaleOrdinal(d3.schemeTableau10).domain(genres);
 
   // Initialize views
+  initializeLegend();
   initializeNetwork();
   initializePieChart();
   // initializeBarChart();
