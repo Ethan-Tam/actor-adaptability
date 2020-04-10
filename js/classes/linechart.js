@@ -120,11 +120,12 @@ class multiLineChart {
       .join("path")
         .attr("class", "line")
         .attr("fill", "none")
-        .attr("stroke", d => vis.colourScale(d["name"]))
         .attr("stroke-width", 1.5)
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
         .style("mix-blend-mode", "multiply")
-        .attr("d", d => vis.line(d["values"]));
+        .transition().duration(vis.transitionTime)
+          .attr("stroke", d => vis.colourScale(d["name"]))
+          .attr("d", d => vis.line(d["values"]));
   }
 }
