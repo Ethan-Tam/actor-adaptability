@@ -4,6 +4,8 @@
 
    - Actor Adaptability is a visualization made to show how actors have a diverse set of skills that allow them to act in multiple genres using data from the top one thousand movies of the last decade. The main view is a network diagram which shows all the actors of the dataset and the genres they tend to act in. Readers can use this to see how actors compare to each other in the number of movies and diversity of genres they have been in. They can also compare the genres themselves by how many and which actors have acted in them. There is also a pie chart showing how many movies there are of each genre. When an actor is selected, it shows the movie genre data only for movies that the chosen actor has been a part of. This view is useful for looking at the ratios of genres in more detail, and it is aided by counts or percentages, depending on the user’s selection. Below that is a view which can be switched between a line chart and a bar chart. It is for viewing how the genres have changed over time, and it can be used to show how both the popularity of a genre or an actor’s interest in a genre shifted between 2006 and 2016.
 
+   ![](./screenshots/teaser.png)
+
 
 2. #### Data
 
@@ -74,9 +76,22 @@
          - Currently, both the bar and line chart are unidirectionally linked to the chord diagram and pie chart, such that when an actor, genre, or pie slice is selected this view shows the correct distribution of movies produced that contain that actor and/or genre throughout the years from 2006-2016.
          - *Radio Buttons* - The line / bar chart radio buttons allow the user to toggle between seeing movie genre count data in line chart format or stacked bar chart format. We found that the line chart was better for visualizing trends when genres where selected or nothing was selected, but on the individual actor level, the stacked bar chart gave a clearer representation of the number of movies of each genre an actor had worked on over the years.
 
-   **Screenshots** (TODO)
+   **Screenshots**
 
-   - 
+   Testing looks for captions:
+   ![](./screenshots/teaser-bar.png)
+   _Testing looks for captions_
+
+   ![](./screenshots/select-genre-line-count.png)
+   _Screenshot 2: Genre selected with Line Chart and Pie Chart Counts_
+
+   ![](./screenshots/select-genre-bar-percentage.png)
+   _Screenshot 3: Genre selected with Bar Chart and Pie Chart Percentages_
+
+   ![](./screenshots/select-actor.png)
+   ![](./screenshots/select-actor-genre.png)
+   ![](./screenshots/search-autocomplete.png)
+   ![](./screenshots/search-select-actor.png)
 
 5. #### Reflection
 
