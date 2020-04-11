@@ -155,7 +155,7 @@ class PieChart {
     vis.chart
       .select('.title')
       .selectAll('text')
-      .data(vis.data, (d) => d.data.genre)
+      .data([null])
       .join('text')
       .text(vis.title)
       .attr('transform', `translate(${-vis.title.length * 4},${-130})`);
