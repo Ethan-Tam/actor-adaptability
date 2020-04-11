@@ -4,7 +4,7 @@
 
    - Actor Adaptability is a visualization made to show how actors have a diverse set of skills that allow them to act in multiple genres using data from the top one thousand movies of the last decade. The main view is a network diagram which shows all the actors of the dataset and the genres they tend to act in. Readers can use this to see how actors compare to each other in the number of movies and diversity of genres they have been in. They can also compare the genres themselves by how many and which actors have acted in them. There is also a pie chart showing how many movies there are of each genre. When an actor is selected, it shows the movie genre data only for movies that the chosen actor has been a part of. This view is useful for looking at the ratios of genres in more detail, and it is aided by counts or percentages, depending on the user’s selection. Below that is a view which can be switched between a line chart and a bar chart. It is for viewing how the genres have changed over time, and it can be used to show how both the popularity of a genre or an actor’s interest in a genre shifted between 2006 and 2016.
 
-   ![](./screenshots/teaser.png)
+   ![](./screenshots/teaser-line.png)
 
 
 2. #### Data
@@ -78,19 +78,25 @@
 
    **Screenshots**
 
-   Testing looks for captions:
+   - Screenshot 1: Overall application with Bar Chart selected
    ![](./screenshots/teaser-bar.png)
-   _Testing looks for captions_
 
+   - Screenshot 2: Genre selected with Line Chart and Pie Chart Counts
    ![](./screenshots/select-genre-line-count.png)
-   _Screenshot 2: Genre selected with Line Chart and Pie Chart Counts_
 
+   - Screenshot 3: Genre selected with Bar Chart and Pie Chart Percentages
    ![](./screenshots/select-genre-bar-percentage.png)
-   _Screenshot 3: Genre selected with Bar Chart and Pie Chart Percentages_
 
+   - Screenshot 4: Actor selected
    ![](./screenshots/select-actor.png)
+
+   - Screenshot 5: Actor and genre selected through Pie Chart
    ![](./screenshots/select-actor-genre.png)
+
+   - Screenshot 6: Search autocomplete functionality
    ![](./screenshots/search-autocomplete.png)
+
+   - Screenshot 7: Actor selection through search functionality
    ![](./screenshots/search-select-actor.png)
 
 5. #### Reflection
