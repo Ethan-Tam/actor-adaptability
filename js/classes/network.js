@@ -277,7 +277,7 @@ class Network {
 
     let innerWidth = vis.tt.node().getBBox().width;
     let x = Math.min(vis.width - innerWidth - 12, vis.centreX + d.pos.x);
-    let y = vis.centreY + d.pos.y - 24;
+    let y = vis.centreY + d.pos.y - 28;
     vis.tg.attr('transform', `translate(${x},${y})`);
 
     vis.tb.attr('width', Math.ceil(innerWidth) + 6);
