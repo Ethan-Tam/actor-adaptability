@@ -50,6 +50,7 @@
      - Interactions/Linkage
        - *Hover* - When a node is hovered, the actor's node becomes highlighted (outlined) and a detail tooltip appears which displays the name of the actor which the node represents. When a genre (ring segment) is hovered it and its name also get highlighted and all the actors that have acted in one or more movies in that given genre are also highlighted.
        - *Click* - When a node is selected/clicked, the data is filtered by reducing the opacity of all other nodes. Also, more details are shown by lines that connect that specified node to their affiliated genres appear. If a genre (ring segment) is clicked, all lines that connect actors to that specified genre will appear and the data will be filtered by reducing the opacity of the ndoes affiliated with actors not involved in this genre. The other views will update once an actor is selected to show additional and more detailed information about that specific person. If no node is selected, the other views (the pie and stacked charts) will  display the overall information of all the actors.
+       - *Search Bar*  - This is not an interaction to the network diagram but to our project as a whole. We added a search bar so that users can search for their favourite actors. When a user types in the search bar, suggestions to autofill the search bar will appear to which a user can select one of them and hit submit/enter to select the node on the network diagram.
    - **Pie Chart:**
 
        - Marks:
@@ -131,6 +132,6 @@
    - *Harlan*
      - Harlan created the network diagram (which includes the click functionality and tooltip) and handled all the data-preprocessing for this project. Harlan also created the legend and the short description associated with our project. Finally, Harlan took the lead with Ian on the proposal and contributed to all the milestone writeups.
    - *Ethan*
-     - Ethan created the pie chart (which includes the click functionality and the bidirectional linkage) and also implemented the search bar for the project. Ethan also took the lead with regards to the 2nd and 3rd project milestone writeups.
+     - Ethan created the pie chart (which includes the click functionality and the bidirectional linkage) and also implemented the search bar for the project. Ethan also took the lead with regards to the 2nd and 3rd project milestone writeups and contributed to the proposal.
    - *Ian*
      - Ian created both the line and bar chart for this project. He was also responsible for linking his charts up to the other views. Ian also did data-preprocessing for his views and contributed to all our writeups. Ian and Harlan took the lead on the project proposal.
