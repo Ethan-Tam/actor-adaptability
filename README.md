@@ -129,8 +129,8 @@
 6. #### Team Assessment
 
    - *Harlan*
-     - Harlan created the network diagram (which includes the click functionality and tooltip) and handled all the data-preprocessing for this project. Harlan also created the legend and the short description associated with our project.
-   - Ethan
-     - Ethan created the pie chart (which includes the click functionality and the bidirectional linkage) and also implemented the search bar for the project. Ethan also took the lead in regards to the project milestone writeups.
-   - Ian
-     - Ian created both the line and bar chart for this project. He was also responsible for linking his charts up to the other views. Ian also did a bit of data-preprocessing for his views and contributed to all our writeups.
+     - Harlan created the network diagram (which includes the click functionality and tooltip) and handled all the data-preprocessing for this project. Harlan also created the legend and the short description associated with our project. Finally, Harlan took the lead with Ian on the proposal and contributed to all the milestone writeups.
+   - *Ethan*
+     - Ethan created the pie chart (which includes the click functionality and the bidirectional linkage) and also implemented the search bar for the project. Ethan also took the lead with regards to the 2nd and 3rd project milestone writeups.
+   - *Ian*
+     - Ian created both the line and bar chart for this project. He was also responsible for linking his charts up to the other views. Ian also did data-preprocessing for his views and contributed to all our writeups. Ian and Harlan took the lead on the project proposal.
