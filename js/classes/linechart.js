@@ -55,9 +55,6 @@ class multiLineChart {
     let vis = this;
     let selectedData;
 
-    // uncomment line below to test selecting actor and genre
-    // vis.selectedGenre = "Action"
-
     if (vis.selectedActor === null && vis.selectedGenre === null) {
       // Nothing is selected
       selectedData = vis.data["all"]

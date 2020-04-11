@@ -133,7 +133,7 @@ const processData = () => {
     // console.log(JSON.stringify(aToGRows));
     // console.log(JSON.stringify(aToARows));
     // console.log(actorToYearGenre);
-    console.log(actorToGenreCount);
+    // console.log(actorToGenreCount);
   });
 }
 
