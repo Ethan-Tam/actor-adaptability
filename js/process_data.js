@@ -137,21 +137,26 @@ const processData = () => {
   });
 }
 
+// Helper function to add a series row or increment the correct count
 function addOrIncrementSeriesValues(actorToGenreCount, yearIndex, g, entityName) {
   let seriesIdx = actorToGenreCount[entityName]["series"].map(row => row["name"]).indexOf(g);
   if (seriesIdx == -1) {
+    // if row doesn't exist yet, push row to seires
     actorToGenreCount[entityName]["series"].push(makeSeriesRow(g, yearIndex));
   } else {
+    // else increment correct year of existing row
     actorToGenreCount[entityName]["series"][seriesIdx]["values"][yearIndex]++;
   }
 }
 
+// Simple helper to create genre count row with y = entityName
 function makeGenreCountRow(entityName) {
   return {y: entityName, 
           series: [],
           dates: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]};
 }
 
+// Simple helper to create series row with given genrename and 1 at given yearIndex
 function makeSeriesRow(genreName, yearIndex) {
   let row = {name: genreName, values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
   row["values"][yearIndex] = 1;
