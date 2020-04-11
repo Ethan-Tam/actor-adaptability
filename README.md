@@ -53,7 +53,7 @@
    - **Pie Chart:**
 
        - Marks:
-         - *Area* - the area of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
+         - *Line* - the angle of each slice represents the proportion of movies an actor has done in the genre associated with the slice. See angle channel description for more information.
 
        - Channels:
          - *Angle* - the total angle of a slice in the pie chart is proportional to the percentage of movies in that specified genre over the past decade. We are aware that this encoding may not be the most effective, but we really wanted to showcase a part to whole relationship which is why we used a pie chart. To further assist the user, we have added labels showing both the count and percentage to clarify the values.
@@ -126,4 +126,12 @@
       - If we had more time, we would have liked to remove the small lines that cut into the slices of the pie chart when one slice is selected and another is being hovered over. Also, we would have liked to make a transition between the bar chart and the line chart. These would have just added to the polish of the project.
    - What would we do differently next time
       - If we had access to instructors, we would ask them for advice and feedback earlier in the process. This time, we spent many hours on visualizations that were completely removed in the end. These hours could have been saved if we had asked for earlier feedback. We would also make sure that our goal/task is very clear and that all of our visualizations directly supported it.
+   
 6. #### Team Assessment
+
+   - *Harlan*
+     - Harlan created the network diagram (which includes the click functionality and tooltip) and handled all the data-preprocessing for this project. Harlan also created the legend and the short description associated with our project.
+   - Ethan
+     - Ethan created the pie chart (which includes the click functionality and the bidirectional linkage) and also implemented the search bar for the project. Ethan also took the lead in regards to the project milestone writeups.
+   - Ian
+     - Ian created both the line and bar chart for this project. He was also responsible for linking his charts up to the other views. Ian also did a bit of data-preprocessing for his views and contributed to all our writeups.
