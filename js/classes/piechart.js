@@ -81,7 +81,7 @@ class PieChart {
         .pie()
         .value(d => d.count)
         .sort(null)(vis.initialData);
-      vis.title = 'All Actors';
+      vis.title = 'All Movies';
     } else {
       // Add all the unincluded genres with count zero
       let genreData = [...vis.selectedActor.genres];
