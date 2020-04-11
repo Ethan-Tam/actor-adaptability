@@ -8,7 +8,8 @@
 2. #### Data
 
    - Description of your data in both domain-specific and abstract language with cardinality
-     - TODO
+     - The dataset contains a list of one thousand movies (items) with their associated data in a tabular format. We used a subset of the attributes: genre (A set of four categorical elements where only the first, main one was chosen. It comes from a set of 7 elements.), actors (A set of four categorical elements. Each comes from a set of 1985 elements.), and year (A quantitative attribute from a range of integers in [2006, 2016].).
+
 
    - Data Source
      - https://www.kaggle.com/PromptCloudHQ/imdb-data
