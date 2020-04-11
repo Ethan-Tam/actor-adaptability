@@ -8,6 +8,7 @@ External Code sources:
 - https://observablehq.com/@ericd9799/learning-stacked-bar-chart-in-d3-js
 - https://www.w3schools.com/howto/howto_js_autocomplete.asp
 - https://howtodoinjava.com/jquery/jquery-detect-if-enter-key-is-pressed/
+- https://observablehq.com/@d3/multi-line-chart
 
 
 ## Milestone 2 Write-Up
