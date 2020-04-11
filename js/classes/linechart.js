@@ -1,10 +1,10 @@
-class stackedBarChart {
+class multiLineChart {
   constructor(_config) {
-	// Set up configuration of visualization
+    // Set up configuration of visualization
     this.config = {
       parentElement: _config.parentElement,
-      containerWidth: _config.containerWidth || 1000,
-      containerHeight: _config.containerHeight || 700,
+      containerWidth: _config.containerWidth || 400,
+      containerHeight: _config.containerHeight || 400,
       margin: _config.margin || { top: 30, bottom: 80, right: 20, left: 30 }
     }
   }
@@ -22,17 +22,14 @@ class stackedBarChart {
       .attr("height", vis.height)
       .attr("transform", `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-    // x-value selector function
-    vis.xValue = d => d.year;
-
     // Compute x-scale
-    vis.xScale = d3.scaleBand()
-      .domain([2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016])
-      .range([0, vis.width])
-      .padding(0.1);
+    vis.xScale = d3.scaleLinear()
+      .domain([2006, 2016])
+      .range([0, vis.width]);
 
     // Set vis.xAxis
-    vis.xAxis = d3.axisBottom(vis.xScale);
+    vis.xAxis = d3.axisBottom(vis.xScale)
+      .tickFormat(d3.format('d'));
 
     // Add x-axis
     vis.xAxisG = vis.chart.append("g")
@@ -58,9 +55,6 @@ class stackedBarChart {
     let vis = this;
     let selectedData;
 
-    // uncomment line below to test selecting actor and genre
-    // vis.selectedGenre = "Action"
-
     if (vis.selectedActor === null && vis.selectedGenre === null) {
       // Nothing is selected
       selectedData = vis.data["all"]
@@ -77,22 +71,28 @@ class stackedBarChart {
       // Deep clone array
       actorData = JSON.parse(JSON.stringify(actorData))
       // Make all genres in yearObj that are not vis.selectedGenre or "year" have 0 count
-      actorData.forEach((yearObj, idx) => {
-        Object.entries(yearObj).forEach(([genre, count]) => {
-          if (genre !== vis.selectedGenre && genre !== "year") {
-            actorData[idx][genre] = 0
-          }
-        });
-      });
+      actorData["series"].forEach((line) => {
+        if (line["name"] !== vis.selectedGenre) {
+          line["values"] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
+      })
       selectedData = actorData
     }
 
-    // Update vis.series
-    vis.series = vis.getSeriesFromData(selectedData)
+    // Update vis.entity
+    vis.entity = selectedData
 
-    // Calculate vis.yScale from vis.series
+    // Update circle data
+    vis.circleData = []
+    vis.entity.series.forEach((line, idx) => {
+      line["values"].forEach((val) => {
+        vis.circleData.push({name: line["name"], value: val});
+      });
+    });
+
+    // Calculate vis.yScale from vis.entity
     vis.yScale = d3.scaleLinear()
-      .domain([0, d3.max(vis.series, d => d3.max(d, d => d[1]))])
+      .domain([0, d3.max(vis.entity["series"], d => d3.max(d["values"]))]).nice()
       .range([vis.height, 0]);
 
     // Filter to only include integers in axis ticks
@@ -104,6 +104,12 @@ class stackedBarChart {
       .tickValues(vis.yAxisTicks)
       .tickFormat(d3.format('d'));
 
+    // Define line
+    vis.line = d3.line()
+        .defined(d => !isNaN(d))
+        .x((d, i) => vis.xScale(vis.entity["dates"][i]))
+        .y(d => vis.yScale(d))
+
     vis.render();
   }
 
@@ -114,24 +120,28 @@ class stackedBarChart {
       .transition().duration(vis.transitionTime)
       .call(vis.yAxis);
 
-    // assign colours and render bars
-    vis.chart.selectAll("g.bar")
-      .data(vis.series)
-      .join("g")
-        .attr("class", "bar")
-        .attr("fill", d => vis.colourScale(d.key))
-      .selectAll("rect")
-      .data(d => d)
-      .join("rect")
-        .attr("x", d => vis.xScale(vis.xValue(d.data)))
-        .attr("width", vis.xScale.bandwidth())
+    vis.chart.selectAll("path.line")
+      .data(vis.entity.series)
+      .join("path")
+        .attr("class", "line")
+        .attr("fill", "none")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .style("mix-blend-mode", "multiply")
         .transition().duration(vis.transitionTime)
-          .attr("y", d => vis.yScale(d[1]))
-          .attr("height", d => vis.yScale(d[0]) - vis.yScale(d[1]))
-  }
+          .attr("stroke", d => vis.colourScale(d["name"]))
+          .attr("d", d => vis.line(d["values"]));
 
-  getSeriesFromData(selectedData) {
-    let vis = this;
-    return d3.stack().keys(vis.data["columns"])(selectedData)
+    vis.chart.selectAll("circle.line")
+      .data(vis.circleData)
+      .join("circle")
+        .attr("class", "line")
+        .attr("r", d => d["value"] === 0 ? 0 : 2)
+        .attr("fill", "white")
+        .transition().duration(vis.transitionTime)
+          .attr("stroke", d => vis.colourScale(d["name"]))
+          .attr("cx", (d, i) => vis.xScale(vis.entity["dates"][i % 11]))
+          .attr("cy", d => vis.yScale(d["value"]));
   }
 }
