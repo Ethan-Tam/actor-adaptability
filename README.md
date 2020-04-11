@@ -9,8 +9,6 @@
 
    - Description of your data in both domain-specific and abstract language with cardinality
      - The dataset contains a list of one thousand movies (items) with their associated data in a tabular format. We used a subset of the attributes: genre (A set of four categorical elements where only the first, main one was chosen. It comes from a set of 7 elements.), actors (A set of four categorical elements. Each comes from a set of 1985 elements.), and year (A quantitative attribute from a range of integers in [2006, 2016].).
-
-
    - Data Source
      - https://www.kaggle.com/PromptCloudHQ/imdb-data
    - External Code Sources
@@ -23,8 +21,8 @@
        1. actor-links.json, which contains an array of all the pre-computed links that get displayed when an actor or genre is clicked in the network diagram,
        2. actor-to-genres.json, which contains an array of actors with counts of each genre they've played in,
        3. actor-to-year-genres.json, which contains a dictionary that maps actors to the number of movies of a certain genre the actor played in each year, and
-       4. genre-to-actors.json, which contains an array of genres, each with a list of actors that have taken part in them.
-       5. TODO: Line chart preprocessing
+       4. genre-to-actors.json, which contains an array of genres, each with a list of actors that have taken part in them, and
+       5. actor-to-genre-count.json, which contains a dictionary that maps actors and genres to the number of movies of a certain genre the actor played in each year.
 
 3. #### Goals and Tasks
 
@@ -62,7 +60,7 @@
          - *Hover* - When a slice is hovered, the slice's outline appears and its radius increases. Since length or area is not used as a channel in the pie chart, this does not skew what our data represents. When an actor's slice is hovered, the individual line that connects the actor's node to that hovered genre is displayed on the network diagram.
          - *Click* - When a slice is selected, all the other slices will have their opacity reduced (similar to the network diagram) and the line that shows up on over in the network diagram is fixated. The bar/line chart also update to further filter based on the genre selected in the pie chart.
          - *Radio Buttons* - The pie chart radio buttons allow the user to change how they view the data labels (either by count or percentage)
-   -   **Line/Stacked Bar Chart** (TODO: Double check please)
+   -   **Multi-Line Chart / Stacked Bar Chart**
        - Marks:
          - Point Mark (Linechart) - the point represents the genre count of movies in a given year. The lines of the line chart connect the points to visualize an overall trend over time.
          - *Line Mark* (Barchart) - the length of a bar chart corresponds to a count of movies.
@@ -74,6 +72,7 @@
          - *Vertical Position on a common scale* - The vertical position of the points indicates the number of movies of a given genre in that year.
        - Interaction/Linkage
          - Currently, both the bar and line chart are unidirectionally linked to the chord diagram and pie chart, such that when an actor, genre, or pie slice is selected this view shows the correct distribution of movies produced that contain that actor and/or genre throughout the years from 2006-2016.
+         - *Radio Buttons* - The line / bar chart radio buttons allow the user to toggle between seeing movie genre count data in line chart format or stacked bar chart format. We found that the line chart was better for visualizing trends when genres where selected or nothing was selected, but on the individual actor level, the stacked bar chart gave a clearer representation of the number of movies of each genre an actor had worked on over the years.
 
    **Screenshots** (TODO)
 
